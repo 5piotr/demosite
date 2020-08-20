@@ -1,0 +1,12 @@
+body {
+  background-color: white;
+}
+
+.my_container_1 {
+  background-color: #f1faee;
+  border-radius: 10px;
+}
+
+.my_jumbotron {
+  background-color: #f1faee;
+}
