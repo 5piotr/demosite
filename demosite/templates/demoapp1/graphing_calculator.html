@@ -1,0 +1,77 @@
+{% extends "demoapp1/base.html" %}
+{% block body_block %}
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-6" style='margin: 1rem auto;'>
+      <form method="get">
+        {% csrf_token %}
+        <div class="form-group">
+          <label>Please enter equation as a function of x and ist domain:</label>
+          <div style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+            <b>f(x)=</b>
+            <input type="text" class="form-control" name='equation'>
+          </div>
+          <br>
+          <div class='row'>
+            <div class="col-lg-4">
+              <div style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+                <b>x_min=</b>
+                <input type="text" class="form-control" name='x_min' value="-10">
+              </div>
+            </div>
+            <div class="col-lg-4">
+              <div style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+                <b>x_max=</b>
+                <input type="text" class="form-control" name='x_max' value="10">
+              </div>
+            </div>
+            <div class="col-lg-4">
+              <div style="display:flex; flex-direction: row; justify-content: center; align-items: center">
+                <b>step=</b>
+                <input type="text" class="form-control" name='step' value="0.1">
+              </div>
+            </div>
+          </div>
+          <small id="emailHelp" class="form-text text-muted">
+            Example:<br>
+            f(x) = x**2+3*x+5<br>
+            <a href="https://docs.python.org/3.8/library/math.html?highlight=trigonometric">Advanced functions with math. module</a>
+          </small>
+        </div>
+        <button type="submit" class="btn btn-success">Calculate</button>
+      </form>
+
+    </div>
+
+  </div>
+    <div class="row">
+
+      {% if eq and ret != 'Error' %}
+        <div class="col">
+          {% autoescape off %}
+          {{ plot_div }}
+          {% endautoescape %}
+        </div>
+
+      {% elif ret == 'Error' %}
+        <div class="col-md-6" style='margin: 1rem auto;'>
+          <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <strong>Error</strong>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+        </div>
+      {% endif %}
+
+    </div>
+
+</div>
+
+{% autoescape off %}
+{{ plot_div }}
+{% endautoescape %}
+
+{% endblock %}

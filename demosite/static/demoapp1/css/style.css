@@ -10,3 +10,8 @@ body {
 .my_jumbotron {
   background-color: #f1faee;
 }
+
+.plot-container {
+  background-color: #a8dadc;
+  border-radius: 5px;
+}
