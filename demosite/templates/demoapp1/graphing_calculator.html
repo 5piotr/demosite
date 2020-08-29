@@ -27,12 +27,6 @@
                 <input type="text" class="form-control" name='x_max' value="10">
               </div>
             </div>
-            <div class="col-lg-4">
-              <div style="display:flex; flex-direction: row; justify-content: center; align-items: center">
-                <b>step=</b>
-                <input type="text" class="form-control" name='step' value="0.1">
-              </div>
-            </div>
           </div>
           <small id="emailHelp" class="form-text text-muted">
             Example:<br>
@@ -50,12 +44,6 @@
 
       {% if plot_div %}
         <div class="col">
-          <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <strong>f(x) = {{ eq }}</strong>
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
           {% autoescape off %}
           {{ plot_div }}
           {% endautoescape %}
