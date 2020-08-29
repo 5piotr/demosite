@@ -13,7 +13,6 @@
             <b>f(x)=</b>
             <input type="text" class="form-control" name='equation'>
           </div>
-          <br>
           <div class='row'>
             <div class="col-lg-4">
               <div style="display:flex; flex-direction: row; justify-content: center; align-items: center">
@@ -48,8 +47,14 @@
   </div>
     <div class="row">
 
-      {% if eq and ret != 'Error' %}
+      {% if plot_div %}
         <div class="col">
+          <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <strong>f(x) = {{ eq }}</strong>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
           {% autoescape off %}
           {{ plot_div }}
           {% endautoescape %}
@@ -69,9 +74,5 @@
     </div>
 
 </div>
-
-{% autoescape off %}
-{{ plot_div }}
-{% endautoescape %}
 
 {% endblock %}

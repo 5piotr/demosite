@@ -23,9 +23,7 @@ def calculator(request):
         }
         return render(request,'demoapp1/calculator.html', context=dict)
     except (NameError, ZeroDivisionError):
-        return render(request,'demoapp1/calculator.html', context={
-                                                            'ret' : 'Error'
-                                                            })
+        return render(request,'demoapp1/calculator.html', context={'ret' : 'Error'})
     except:
         return render(request,'demoapp1/calculator.html')
 
@@ -41,18 +39,11 @@ def graphing_calculator(request):
                             mode='lines', name='test',
                             opacity=0.8, marker_color='green')],
                             output_type='div')
-        return render(request, 'demoapp1/graphing_calculator.html', context={'plot_div': plot_div})
+        return render(request, 'demoapp1/graphing_calculator.html', context={'plot_div': plot_div,
+                                                                                'eq' : eq})
     except (NameError, ZeroDivisionError):
         print(1)
-        return render(request,'demoapp1/graphing_calculator.html', context={
-                                                            'ret' : 'Error'
-                                                            })
+        return render(request,'demoapp1/graphing_calculator.html', context={'ret' : 'Error'})
     except:
         print(2)
         return render(request,'demoapp1/graphing_calculator.html')
-
-    x_min = float(request.GET['x_min'])
-    x_max = float(request.GET['x_max'])
-    step = float(request.GET['step'])
-    x_data = range(x_min,x_max)
-    print(type(x_data))
