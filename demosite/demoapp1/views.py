@@ -55,3 +55,6 @@ def graphing_calculator(request):
     except:
         print(2)
         return render(request,'demoapp1/graphing_calculator.html')
+
+def under_construction(request):
+    return render(request,'demoapp1/under_construction.html')
