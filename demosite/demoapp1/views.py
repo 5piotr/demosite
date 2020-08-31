@@ -50,10 +50,8 @@ def graphing_calculator(request):
         return render(request, 'demoapp1/graphing_calculator.html', context={'plot_div': plot_div,
                                                                                 'eq' : eq})
     except (NameError, ZeroDivisionError):
-        print(1)
         return render(request,'demoapp1/graphing_calculator.html', context={'ret' : 'Error'})
     except:
-        print(2)
         return render(request,'demoapp1/graphing_calculator.html')
 
 def under_construction(request):
