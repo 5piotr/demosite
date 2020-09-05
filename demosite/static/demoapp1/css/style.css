@@ -3,15 +3,23 @@ body {
 }
 
 .my_container_1 {
-  background-color: #f1faee;
+  background-color: #caf0f8;
   border-radius: 10px;
 }
 
 .my_jumbotron {
-  background-color: #f1faee;
+  background-color: #caf0f8;
 }
 
-.plot-container {
-  background-color: #a8dadc;
+.navbar {
+  background-color: #0096c7;
   border-radius: 5px;
+}
+
+.dropdown-menu {
+  background-color: #0096c7;
+}
+
+.dropdown-item {
+  color: white;
 }
