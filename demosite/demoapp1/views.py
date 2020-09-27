@@ -15,7 +15,7 @@ class AboutMeView(TemplateView):
 
 def calculator(request):
     try:
-        hue = request.GET['query']
+        hue = request.POST['query']
         ret = eval(hue)
         dict = {
             'hue' : hue,
@@ -29,9 +29,9 @@ def calculator(request):
 
 def graphing_calculator(request):
     try:
-        eq = request.GET['equation']
-        x_min = float(request.GET['x_min'])
-        x_max = float(request.GET['x_max'])
+        eq = request.POST['equation']
+        x_min = float(request.POST['x_min'])
+        x_max = float(request.POST['x_max'])
         # step = float(request.GET['step'])
         # x_data = numpy.arange(x_min,x_max,step)
         x_data = numpy.linspace(x_min,x_max,200,True)
@@ -49,7 +49,7 @@ def graphing_calculator(request):
         plot_div = plot(fig, output_type='div')
         return render(request, 'demoapp1/graphing_calculator.html', context={'plot_div': plot_div,
                                                                                 'eq' : eq})
-    except (NameError, ZeroDivisionError):
+    except (NameError, ZeroDivisionError, ValueError):
         return render(request,'demoapp1/graphing_calculator.html', context={'ret' : 'Error'})
     except:
         return render(request,'demoapp1/graphing_calculator.html')
