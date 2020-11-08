@@ -79,7 +79,7 @@ def simple_gesture_recognition(request):
         fig.update_layout(width=wit, height=hei, margin=dict(l=10, r=10, b=10, t=10))
         fig.update_xaxes(showticklabels=False).update_yaxes(showticklabels=False)
 
-        model = load_model('demoapp1\\2020-11-07--12-23_best')
+        model = load_model(os.path.join(os.path.dirname(os.path.abspath(__file__)),'2020-11-07--12-23_best'))
         pred_dict = {0:'paper', 1:'rock', 2:'scissors'}
         my_image = picture.resize((90,60))
         my_image = image.img_to_array(my_image)
