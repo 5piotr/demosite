@@ -21,7 +21,7 @@
 
             <small id="emailHelp" class="form-text text-muted">
               <p>Picture should be taken on a dark uniform surface under diffused lighting condition.<br>
-              Max file size: 5MB<br>
+              Max file size: 4MB<br>
               Format: .jpg, .png
               </p>
             </small>
@@ -33,7 +33,7 @@
 
         <br>
 
-        {% if ret != 'Error' %}
+        {% if hue and ret != 'Error' %}
           <div class="container">
             <div class="alert alert-success alert-dismissible fade show" role="alert">
               <strong>{{ label }}</strong>

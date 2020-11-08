@@ -63,61 +63,38 @@ def graphing_calculator(request):
         return render(request,'demoapp1/graphing_calculator.html')
 
 def simple_gesture_recognition(request):
-    # try:
-    #     if len(request.FILES['picture']) >= 5242880:
-    #         raise ValueError('incorrect file type')
-    #     if Image.open(request.FILES['picture']).format not in ['JPEG','PNG']:
-    #         raise ValueError('incorrect file type')
-    #
-    #     picture = Image.open(request.FILES['picture'])
-    #     picture = picture.resize((400,400*9/16))
-    #     fig = px.imshow(picture)
-    #     fig.update_layout(coloraxis_showscale=False)
-    #     fig.update_layout(width=600, height=350, margin=dict(l=10, r=10, b=10, t=10))
-    #     fig.update_xaxes(showticklabels=False).update_yaxes(showticklabels=False)
-    #
-    #     model = load_model('demoapp1\\2020-11-07--12-23_best')
-    #     pred_dict = {0:'paper', 1:'rock', 2:'scissors'}
-    #     my_image = picture.resize((90,60))
-    #     my_image = image.img_to_array(my_image)
-    #     my_image_p = np.expand_dims(my_image, axis=0)
-    #     label_no = np.argmax(model.predict(my_image_p))
-    #     label = pred_dict[label_no]
-    #
-    #     plot_div = plot(fig, output_type='div')
-    #     return render(request,'demoapp1/simple_gesture_recognition.html', context={'plot_div': plot_div,
-    #                                                                                 'label':label})
-    # except (ValueError, PIL.UnidentifiedImageError):
-    #     return render(request,'demoapp1/simple_gesture_recognition.html', context={'ret' : 'Error'})
-    # except:
-    #     return render(request,'demoapp1/simple_gesture_recognition.html')
+    try:
+        if len(request.FILES['picture']) >= 4194304:
+            raise ValueError('incorrect file type')
+        if Image.open(request.FILES['picture']).format not in ['JPEG','PNG']:
+            raise ValueError('incorrect file type')
 
-    if len(request.FILES['picture']) >= 5242880:
-        raise ValueError('incorrect file type')
-    if Image.open(request.FILES['picture']).format not in ['JPEG','PNG']:
-        raise ValueError('incorrect file type')
+        wit = 300
+        hei = int(wit*3/4)
 
-    wit = 300
-    hei = int(wit*3/4)
+        picture = Image.open(request.FILES['picture'])
+        picture = picture.resize((wit,hei))
+        fig = px.imshow(picture)
+        fig.update_layout(coloraxis_showscale=False)
+        fig.update_layout(width=wit, height=hei, margin=dict(l=10, r=10, b=10, t=10))
+        fig.update_xaxes(showticklabels=False).update_yaxes(showticklabels=False)
 
-    picture = Image.open(request.FILES['picture'])
-    picture = picture.resize((wit,hei))
-    fig = px.imshow(picture)
-    fig.update_layout(coloraxis_showscale=False)
-    fig.update_layout(width=wit, height=hei, margin=dict(l=10, r=10, b=10, t=10))
-    fig.update_xaxes(showticklabels=False).update_yaxes(showticklabels=False)
+        model = load_model('demoapp1\\2020-11-07--12-23_best')
+        pred_dict = {0:'paper', 1:'rock', 2:'scissors'}
+        my_image = picture.resize((90,60))
+        my_image = image.img_to_array(my_image)
+        my_image_p = np.expand_dims(my_image, axis=0)
+        label_no = np.argmax(model.predict(my_image_p))
+        label = pred_dict[label_no]
 
-    model = load_model('demoapp1\\2020-11-07--12-23_best')
-    pred_dict = {0:'paper', 1:'rock', 2:'scissors'}
-    my_image = picture.resize((90,60))
-    my_image = image.img_to_array(my_image)
-    my_image_p = np.expand_dims(my_image, axis=0)
-    label_no = np.argmax(model.predict(my_image_p))
-    label = pred_dict[label_no]
-
-    plot_div = plot(fig, output_type='div')
-    return render(request,'demoapp1/simple_gesture_recognition.html', context={'plot_div': plot_div,
-                                                                                'label':label})
+        plot_div = plot(fig, output_type='div')
+        return render(request,'demoapp1/simple_gesture_recognition.html', context={'plot_div': plot_div,
+                                                                                    'label':label,
+                                                                                    'hue':'hue'})
+    except (ValueError, PIL.UnidentifiedImageError):
+        return render(request,'demoapp1/simple_gesture_recognition.html', context={'ret' : 'Error'})
+    except:
+        return render(request,'demoapp1/simple_gesture_recognition.html')
 
 def under_construction(request):
     return render(request,'demoapp1/under_construction.html')
