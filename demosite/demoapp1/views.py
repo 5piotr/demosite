@@ -2,8 +2,10 @@ from django.shortcuts import render
 from django.views.generic import (View, TemplateView)
 from plotly.offline import plot
 import plotly.graph_objs as go
+import plotly.express as px
 import math
 import numpy
+from PIL import Image, ImageOps
 
 # Create your views here.
 
@@ -38,6 +40,7 @@ def graphing_calculator(request):
         y_data = [eval(eq) for x in x_data]
         fig = go.Figure()
         fig.add_trace(go.Scatter(x=x_data,y=y_data,mode='lines'))
+        fig.update_layout(margin=dict(l=10, r=10, b=10, t=10))
         fig.update_layout(
                 title={'text': 'f(x) = ' + eq,
                         'y':0.9,
@@ -53,6 +56,21 @@ def graphing_calculator(request):
         return render(request,'demoapp1/graphing_calculator.html', context={'ret' : 'Error'})
     except:
         return render(request,'demoapp1/graphing_calculator.html')
+
+def simple_gesture_recognition(request):
+    try:
+        picture = Image.open(request.FILES['picture'])
+        fig = px.imshow(picture)
+        fig.update_layout(coloraxis_showscale=False)
+        fig.update_layout(width=600, height=350, margin=dict(l=10, r=10, b=10, t=10))
+        fig.update_xaxes(showticklabels=False).update_yaxes(showticklabels=False)
+
+
+
+        plot_div = plot(fig, output_type='div')
+        return render(request,'demoapp1/simple_gesture_recognition.html', context={'plot_div': plot_div})
+    except:
+        return render(request,'demoapp1/simple_gesture_recognition.html')
 
 def under_construction(request):
     return render(request,'demoapp1/under_construction.html')

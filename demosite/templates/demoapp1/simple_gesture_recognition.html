@@ -1,0 +1,77 @@
+{% extends "demoapp1/base.html" %}
+
+{% block title %}
+<title>Simple Gesture Recognition</title>
+{% endblock %}
+
+{% block body_block %}
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-6" style='margin: 3rem auto;'>
+        <form method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+          <div class="form-group">
+            <label>Please upload picture of a hand gesture representing the Rock Paper Scissors game call:</label>
+            <br><br>
+            <div class="custom-file">
+              <input type="file" class="custom-file-input" id="inputGroupFile02" name='picture'>
+              <label class="custom-file-label" for="inputGroupFile02">Choose file</label>
+            </div>
+
+            <small id="emailHelp" class="form-text text-muted">
+              <p>Picture should be taken on a dark uniform surface under diffused lighting condition.<br>
+              Max file size: 5MB br<br>
+              Format: .jpg, .png
+              </p>
+            </small>
+
+          </div>
+          <button type="submit" class="btn btn-success">Upload</button>
+
+        </form>
+
+        <br>
+
+        <div class="container">
+          {% autoescape off %}
+          {{ plot_div }}
+          {% endautoescape %}
+        </div>
+
+        <br>
+
+        {% if hue and ret != 'Error' %}
+          <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <strong>{{hue}} = {{ret}}</strong>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+        {% elif ret == 'Error' %}
+          <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <strong>Error</strong>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+        {% endif %}
+
+
+
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+    $('#inputGroupFile02').on('change',function(){
+        //get the file name
+        var fileName = $(this).val().replace('C:\\fakepath\\', " ");
+        //replace the "Choose a file" label
+        $(this).next('.custom-file-label').html(fileName);
+    })
+</script>
+
+{% endblock %}
