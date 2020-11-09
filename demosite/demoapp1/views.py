@@ -64,10 +64,10 @@ def graphing_calculator(request):
 
 def simple_gesture_recognition(request):
     try:
-        if len(request.FILES['picture']) >= 4194304:
-            raise ValueError('incorrect file type')
-        if Image.open(request.FILES['picture']).format not in ['JPEG','PNG']:
-            raise ValueError('incorrect file type')
+        # if len(request.FILES['picture']) >= 4194304:
+        #     raise ValueError('incorrect file type')
+        # if Image.open(request.FILES['picture']).format not in ['JPEG','PNG']:
+        #     raise ValueError('incorrect file type')
 
         wit = 300
         hei = int(wit*3/4)
