@@ -91,10 +91,9 @@ def simple_gesture_recognition(request):
         return render(request,'demoapp1/simple_gesture_recognition.html', context={'plot_div': plot_div,
                                                                                     'label':label,
                                                                                     'hue':'hue'})
-    # except (ValueError, PIL.UnidentifiedImageError):
-    #     return render(request,'demoapp1/simple_gesture_recognition.html', context={'ret' : 'Error'})
-    except Exception as e:
-        print(e)
+    except (ValueError, PIL.UnidentifiedImageError):
+        return render(request,'demoapp1/simple_gesture_recognition.html', context={'ret' : 'Error'})
+    except:
         return render(request,'demoapp1/simple_gesture_recognition.html')
 
 def under_construction(request):
