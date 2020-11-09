@@ -63,7 +63,6 @@ def graphing_calculator(request):
         return render(request,'demoapp1/graphing_calculator.html')
 
 def simple_gesture_recognition(request):
-    print(os.path.join(os.path.dirname(os.path.abspath(__file__)),'2020-11-07--12-23_best'))
     try:
         if len(request.FILES['picture']) >= 4194304:
             raise ValueError('incorrect file type')
