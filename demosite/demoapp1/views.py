@@ -64,10 +64,10 @@ def graphing_calculator(request):
 
 def simple_gesture_recognition(request):
     try:
-        # if len(request.FILES['picture']) >= 4194304:
-        #     raise ValueError('incorrect file type')
-        # if Image.open(request.FILES['picture']).format not in ['JPEG','PNG']:
-        #     raise ValueError('incorrect file type')
+        if len(request.FILES['picture']) >= 4194304:
+            raise ValueError('file too big')
+        if Image.open(request.FILES['picture']).format not in ['JPEG','PNG']:
+            raise ValueError('incorrect file type')
 
         wit = 300
         hei = int(wit*3/4)
@@ -91,9 +91,10 @@ def simple_gesture_recognition(request):
         return render(request,'demoapp1/simple_gesture_recognition.html', context={'plot_div': plot_div,
                                                                                     'label':label,
                                                                                     'hue':'hue'})
-    except (ValueError, PIL.UnidentifiedImageError):
-        return render(request,'demoapp1/simple_gesture_recognition.html', context={'ret' : 'Error'})
-    except:
+    # except (ValueError, PIL.UnidentifiedImageError):
+    #     return render(request,'demoapp1/simple_gesture_recognition.html', context={'ret' : 'Error'})
+    except Exception as e:
+        print(e)
         return render(request,'demoapp1/simple_gesture_recognition.html')
 
 def under_construction(request):
