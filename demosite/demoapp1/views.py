@@ -96,5 +96,8 @@ def simple_gesture_recognition(request):
     except:
         return render(request,'demoapp1/simple_gesture_recognition.html')
 
+def cnn_details(request):
+    return render(request,'demoapp1/cnn_details.html')
+
 def under_construction(request):
     return render(request,'demoapp1/under_construction.html')
