@@ -9,6 +9,6 @@ urlpatterns = [
     path('calculator/', views.calculator, name='calculator'),
     path('graphing_calculator/', views.graphing_calculator, name='graphing_calculator'),
     path('simple_gesture_recognition/', views.simple_gesture_recognition, name='simple_gesture_recognition'),
-    path('cnn_details/', views.cnn_details, name='cnn_details'),
+    path('rps_cnn_details/', views.rps_cnn_details, name='rps_cnn_details'),
     path('under_construction/',views.under_construction, name='under_construction'),
 ]

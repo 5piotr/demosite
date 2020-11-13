@@ -23,3 +23,11 @@ body {
 .dropdown-item {
   color: white;
 }
+
+.my_h4 {
+  padding: 2rem 0rem 0rem 0rem;
+}
+
+.my_p {
+  padding: 1rem 0rem 1rem 0rem;
+}
