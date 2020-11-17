@@ -17,8 +17,8 @@ import os
 class IndexView(TemplateView):
     template_name = 'demoapp1/index.html'
 
-class AboutMeView(TemplateView):
-    template_name = 'demoapp1/about_me.html'
+class AboutView(TemplateView):
+    template_name = 'demoapp1/about.html'
 
 def calculator(request):
     try:

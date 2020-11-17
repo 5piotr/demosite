@@ -1,0 +1,70 @@
+{% extends "demoapp1/base.html" %}
+
+{% block title %}
+<title>About</title>
+{% endblock %}
+
+{% block body_block %}
+{% load static %}
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-8" style='margin: 0 auto; padding: 2rem 1rem;'>
+      <h4 class="my_h4">The Webpage</h4>
+      <div class="row align-items-center">
+        <div class="col-sm-8">
+          <p class="my_p">
+            This webpage has been created for training purposes. Source code available on GitHub.
+          </p>
+        </div>
+        <div class="col-sm-4">
+          <a href="https://github.com/5piotr/demosite">
+            <img src="{% static 'demoapp1/images/github.png' %}" class="mx-auto d-block" alt="" height="50">
+          </a>
+        </div>
+      </div>
+      <h4 class="my_h4">Simple Gesture Recognition</h4>
+      <div class="row align-items-center">
+        <div class="col-sm-8">
+          <p class="my_p">
+            CNN source code available on GitHub.
+          </p>
+        </div>
+        <div class="col-sm-4">
+          <a href="https://github.com/5piotr/rps_cnn_classification">
+            <img src="{% static 'demoapp1/images/github.png' %}" class="mx-auto d-block" alt="" height="50">
+          </a>
+        </div>
+      </div>
+      <div class="row align-items-center">
+        <div class="col-sm-8">
+          <p class="my_p">
+            CNN model has been trained on datased available on Kaggle.<br>
+            License: CC-BY-SA 4.0
+          </p>
+        </div>
+        <div class="col-sm-4">
+          <a href="https://www.kaggle.com/drgfreeman/rockpaperscissors">
+            <img src="{% static 'demoapp1/images/kaggle.png' %}" class="mx-auto d-block" alt="" height="50">
+          </a>
+        </div>
+      </div>
+      <h4 class="my_h4">Contact Me</h4>
+      <div class="row align-items-center">
+        <div class="col-sm-8">
+          <p class="my_p">
+            If you want to contact me please use LinkedIn.
+          </p>
+        </div>
+        <div class="col-sm-4">
+          <a href="https://github.com/5piotr/demosite">
+            <img src="{% static 'demoapp1/images/linkedin.png' %}" class="mx-auto d-block" alt="" height="50">
+          </a>
+        </div>
+      </div>
+  </div>
+
+</div>
+
+
+{% endblock %}

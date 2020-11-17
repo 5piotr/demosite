@@ -18,15 +18,13 @@
               <input type="file" class="custom-file-input" id="inputGroupFile02" name='picture'>
               <label class="custom-file-label" for="inputGroupFile02">Choose file</label>
             </div>
-
             <small id="emailHelp" class="form-text text-muted">
               <p>Picture should be taken on a dark uniform surface under diffused lighting condition.<br>
                 Max file size: 4MB<br>
                 Format: JPEG, PNG<br>
-                <a href="{% url 'demoapp1:rps_cnn_details' %}">CNN model details</a>
               </p>
             </small>
-
+            <a href="{% url 'demoapp1:rps_cnn_details' %}" class="badge badge-pill badge-info">More details about the CNN model</a>
           </div>
           <button type="submit" class="btn btn-success">Upload</button>
 
@@ -54,6 +52,8 @@
             </button>
           </div>
         {% endif %}
+
+
 
     </div>
 
