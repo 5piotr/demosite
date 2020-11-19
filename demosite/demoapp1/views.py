@@ -29,7 +29,7 @@ def calculator(request):
             'ret' : ret,
         }
         return render(request,'demoapp1/calculator.html', context=dict)
-    except (NameError, ZeroDivisionError):
+    except (NameError, ZeroDivisionError, ValueError, TypeError):
         return render(request,'demoapp1/calculator.html', context={'ret' : 'Error'})
     except:
         return render(request,'demoapp1/calculator.html')
@@ -57,7 +57,7 @@ def graphing_calculator(request):
         plot_div = plot(fig, output_type='div')
         return render(request, 'demoapp1/graphing_calculator.html', context={'plot_div': plot_div,
                                                                                 'eq' : eq})
-    except (NameError, ZeroDivisionError, ValueError):
+    except (NameError, ZeroDivisionError, ValueError, TypeError):
         return render(request,'demoapp1/graphing_calculator.html', context={'ret' : 'Error'})
     except:
         return render(request,'demoapp1/graphing_calculator.html')
