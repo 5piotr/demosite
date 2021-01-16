@@ -99,5 +99,8 @@ def simple_gesture_recognition(request):
 def rps_cnn_details(request):
     return render(request,'demoapp1/rps_cnn_details.html')
 
+def apartment_price_estimator(request):
+    return render(request,'demoapp1/apartment_price_estimator.html')    
+
 def under_construction(request):
     return render(request,'demoapp1/under_construction.html')

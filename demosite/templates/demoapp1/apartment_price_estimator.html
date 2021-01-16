@@ -1,0 +1,48 @@
+{% extends "demoapp1/base.html" %}
+
+{% block title %}
+<title>Apartment Price Estimator</title>
+{% endblock %}
+
+{% block body_block %}
+{% load static %}
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+  integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+  crossorigin=""/>
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+  integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+  crossorigin="">
+</script>
+
+
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-6" style='margin: 3rem auto;'>
+        <form method="post">
+          {% csrf_token %}
+          <div class="form-group">
+
+            <div id='mapid'></div>
+
+            <input id="lat" type="text" value="" />
+            <input id="lng" type="text" value="" />
+
+          </div>
+          <button type="submit" class="btn btn-success">Upload</button>
+
+        </form>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+
+
+<script src="{% static 'demoapp1/js/apartment_price_estimator.js' %}"></script>
+{% endblock %}

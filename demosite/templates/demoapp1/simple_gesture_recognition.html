@@ -5,6 +5,7 @@
 {% endblock %}
 
 {% block body_block %}
+{% load static %}
 
 <div class="container">
   <div class="row">
@@ -61,13 +62,5 @@
 
 </div>
 
-<script>
-    $('#inputGroupFile02').on('change',function(){
-        //get the file name
-        var fileName = $(this).val().replace('C:\\fakepath\\', " ");
-        //replace the "Choose a file" label
-        $(this).next('.custom-file-label').html(fileName);
-    })
-</script>
-
+<script src="{% static 'demoapp1/js/simple_gesture_recognition.js' %}"></script>
 {% endblock %}
