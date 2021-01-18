@@ -10,14 +10,14 @@
 <div class="container">
   <div class="row">
     <div class="col-md-6" style='margin: 3rem auto;'>
-        <form method="post" enctype="multipart/form-data">
+        <form id="form" method="post" enctype="multipart/form-data">
           {% csrf_token %}
           <div class="form-group">
             <label>Please upload picture of a hand gesture representing the Rock Paper Scissors game call:</label>
             <br><br>
             <div class="custom-file">
-              <input type="file" class="custom-file-input" id="inputGroupFile02" name='picture'>
-              <label class="custom-file-label" for="inputGroupFile02">Choose file</label>
+              <input type="file" class="custom-file-input" id="validatedCustomFile" name='picture' accept=".jpg,.png" required>
+              <label class="custom-file-label" for="validatedCustomFile">Choose file</label>
             </div>
             <small id="emailHelp" class="form-text text-muted">
               <p>Picture should be taken on a dark uniform surface under diffused lighting condition.<br>
@@ -28,6 +28,11 @@
             <a href="{% url 'demoapp1:rps_cnn_details' %}" class="badge badge-pill badge-info">More details about the CNN model</a>
           </div>
           <button type="submit" class="btn btn-success">Upload</button>
+          <div class='row'>
+            <div class="col-md-3" style='margin: 1rem auto;'>
+              <div id='spinner'></div>
+            </div>
+          </div>
 
         </form>
 

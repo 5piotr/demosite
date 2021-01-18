@@ -21,18 +21,113 @@
 <div class="container">
   <div class="row">
     <div class="col-md-6" style='margin: 3rem auto;'>
-        <form method="post">
+        <form id="form" method="get" class="needs-validation" novalidate>
           {% csrf_token %}
           <div class="form-group">
-
+            <label>Please select the apartment location on the map and its parameters:</label>
+            <br><br>
             <div id='mapid'></div>
-
-            <input id="lat" type="text" value="" />
-            <input id="lng" type="text" value="" />
+            <br>
+            {# 1 row #}
+            <div class="row">
+              <label for="lat" class="col-lg-1 col-form-label">lat:</label>
+              <div class="col-lg-5">
+                <input id="lat" class="form-control" type="text" value="" name="lat" required>
+                <div class="invalid-feedback">
+                  Please select from the map.
+                </div>
+              </div>
+              <label for="lng" class="col-lg-1 col-form-label">lng:</label>
+              <div class="col-lg-5">
+                <input id="lng" class="form-control" type="text" value="" name="lng" required>
+                <div class="invalid-feedback">
+                  Please select from the map.
+                </div>
+              </div>
+            </div>
+            <br>
+            {# 2 row #}
+            <div class="row">
+              <label for="market" class="col-lg-3 col-form-label">market:</label>
+              <div class="col-lg-3">
+                <select id='market' class="custom-select" name="market" required>
+                  <option selected disabled value=""></option>
+                  <option>primary</option>
+                  <option>aftermarket</option>
+                </select>
+              </div>
+              <label for="built" class="col-lg-3 col-form-label">built year:</label>
+              <div class="col-lg-3">
+                <select id='built' class="custom-select" name="built" required>
+                  <option selected disabled value=""></option>
+                  {% with ''|center:123 as range %}
+                  {% for _ in range %}
+                    <option>{{ forloop.counter|add:1899 }}</option>
+                  {% endfor %}
+                  {% endwith %}
+                </select>
+              </div>
+            </div>
+            <br>
+            {# 3 row #}
+            <div class="row">
+              <label for="area" class="col-lg-3 col-form-label">area in m<sup>2</sup>:</label>
+              <div class="col-lg-3">
+                <input id="area" class="form-control" type="text" value="" name="area" required pattern="^[1-9][0-9]*">
+                <div class="invalid-feedback">
+                  Must be >0 and without separators.
+                </div>
+              </div>
+              <label for="rooms" class="col-lg-3 col-form-label">rooms:</label>
+              <div class="col-lg-3">
+                <select id='rooms' class="custom-select" name="rooms" required>
+                  <option selected disabled value=""></option>
+                  {% with ''|center:8 as range %}
+                  {% for _ in range %}
+                    <option>{{ forloop.counter }}</option>
+                  {% endfor %}
+                  {% endwith %}
+                  <option>> 8</option>
+                </select>
+              </div>
+            </div>
+            <br>
+            {# 4 row #}
+            <div class="row">
+              <label for="floor" class="col-lg-3 col-form-label">floor:</label>
+              <div class="col-lg-3">
+                <select id='floor' class="custom-select" name="floor" required>
+                  <option selected disabled value=""></option>
+                  {% with ''|center:30 as range %}
+                  {% for _ in range %}
+                    <option>{{ forloop.counter|add:"-1" }}</option>
+                  {% endfor %}
+                  {% endwith %}
+                  <option>30 or more</option>
+                </select>
+              </div>
+              <label for="floors" class="col-lg-3 col-form-label">floors:</label>
+              <div class="col-lg-3">
+                <select id='floors' class="custom-select" name="floors" required>
+                  <option selected disabled value=""></option>
+                  {% with ''|center:30 as range %}
+                  {% for _ in range %}
+                    <option>{{ forloop.counter|add:"-1" }}</option>
+                  {% endfor %}
+                  {% endwith %}
+                  <option>30 or more</option>
+                </select>
+              </div>
+            </div>
 
           </div>
+          <br>
           <button type="submit" class="btn btn-success">Upload</button>
-
+          <div class='row'>
+            <div class="col-md-3" style='margin: 1rem auto;'>
+              <div id='spinner'></div>
+            </div>
+          </div>
         </form>
 
     </div>
@@ -40,7 +135,6 @@
   </div>
 
 </div>
-
 
 
 
