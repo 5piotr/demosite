@@ -11,6 +11,10 @@ import numpy as np
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing import image
 import os
+import joblib
+from sklearn.cluster import KMeans
+import pickle as pkl
+import pandas as pd
 
 # Create your views here.
 
@@ -100,7 +104,93 @@ def rps_cnn_details(request):
     return render(request,'demoapp1/rps_cnn_details.html')
 
 def apartment_price_estimator(request):
-    return render(request,'demoapp1/apartment_price_estimator.html')    
+    # try:
+    lat = float(request.POST['lat'])
+    lng = float(request.POST['lng'])
+    if request.POST['market'] == 'primary':
+        market = 'pierwotny'
+    elif request.POST['market'] == 'aftermarket':
+        market = 'wtorny'
+    built = float(request.POST['built'])
+    area = float(request.POST['area'])
+    if request.POST['rooms'] == '> 8':
+        rooms = 'więcej niż 8'
+    else:
+        rooms = request.POST['rooms']
+    if request.POST['floor'] == '0':
+        floor = 'parter'
+    elif request.POST['floor'] == '30 or more':
+        floor = 'powyżej 30'
+    else:
+        floor = request.POST['floor']
+    if request.POST['floors'] == '0':
+        floors = '0 (parter)'
+    elif request.POST['floors'] == '30 or more':
+        floors = 'powyżej 30'
+    else:
+        floors = request.POST['floors']
+
+    # cluster assignment
+    kmeans = joblib.load(os.path.join(os.path.dirname(os.path.abspath(__file__)),'500_means_cls'))
+    cluster = kmeans.predict([[lat,lng]])[0]
+
+    # preparint input for estimation
+    infile = open(os.path.join(os.path.dirname(os.path.abspath(__file__)),'dummy_apartment_frame'),'rb')
+    dummy_frame = pkl.load(infile)
+    infile.close()
+
+    dummy_frame.area = area
+    dummy_frame.build_yr = built
+    if market == 'wtorny':
+        dummy_frame.market_wtorny = 1
+    if rooms != '1':
+        dummy_frame['rooms_' + str(rooms)] = 1
+    if floor != '1':
+        dummy_frame['floor_' + str(floor)] = 1
+    if floors != '0 (parter)':
+        dummy_frame['floors_' + str(floors)] = 1
+    if cluster != 0:
+        dummy_frame['cluster_' + str(cluster)] = 1
+
+    # ann estimation
+    model_ann = load_model(os.path.join(os.path.dirname(os.path.abspath(__file__)),'500a1_2021-01-13--15-52'))
+    scaler_ann = joblib.load(os.path.join(os.path.dirname(os.path.abspath(__file__)),'scaler_500a1'))
+    pred_ann = model_ann.predict(scaler_ann.transform(dummy_frame))[0][0]
+    pred_ann = int(pred_ann)
+
+    # random forest estimation
+    model_rf = joblib.load(os.path.join(os.path.dirname(os.path.abspath(__file__)),'random_forest_model_a1'))
+    pred_rf = model_rf.predict(dummy_frame)[0]
+    pred_rf = int(pred_rf)
+
+    # pd.set_option('max_columns', None)
+    print('lat',lat,type(lat),'\n',
+    'lng',lng,type(lng),'\n',
+    'market',market,type(market),'\n',
+    'built',built,type(built),'\n',
+    'area',area,type(area),'\n',
+    'rooms',rooms,type(rooms),'\n',
+    'floor',floor,type(floor),'\n',
+    'floors',floors,type(floors),'\n',
+    'cluster',cluster,type(cluster),'\n\n',
+    'pred_ann',pred_ann,type(pred_ann),'\n',
+    'pred_rf',pred_rf,type(pred_rf),'\n\n',
+    dummy_frame)
+
+    return render(request,'demoapp1/apartment_price_estimator.html',
+                    context={
+                    'lat':lat,
+                    'lng':lng,
+                    'market':market,
+                    'built':built,
+                    'area':area,
+                    'rooms':rooms,
+                    'floor':floor,
+                    'floors':floors
+                    })
+
+    # except:
+    #     return render(request,'demoapp1/apartment_price_estimator.html')
 
 def under_construction(request):
     return render(request,'demoapp1/under_construction.html')
