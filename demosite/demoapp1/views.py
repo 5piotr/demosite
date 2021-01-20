@@ -57,7 +57,9 @@ def graphing_calculator(request):
                         'xanchor': 'center',
                         'yanchor': 'top'},
                 xaxis_title="x",
-                yaxis_title="f(x)")
+                yaxis_title="f(x)",
+                paper_bgcolor="#caf0f8",
+                plot_bgcolor='#d8f3dc')
         plot_div = plot(fig, output_type='div')
         return render(request, 'demoapp1/graphing_calculator.html', context={'plot_div': plot_div,
                                                                                 'eq' : eq})
@@ -68,19 +70,19 @@ def graphing_calculator(request):
 
 def simple_gesture_recognition(request):
     try:
-        if len(request.FILES['picture']) >= 4194304:
-            raise ValueError('file too big')
-        if Image.open(request.FILES['picture']).format not in ['JPEG','PNG']:
-            raise ValueError('incorrect file type')
+        # if len(request.FILES['picture']) >= 4194304:
+        #     raise ValueError('file too big')
+        # if Image.open(request.FILES['picture']).format not in ['JPEG','PNG']:
+        #     raise ValueError('incorrect file type')
 
-        wit = 300
+        wit = 250
         hei = int(wit*3/4)
 
         picture = Image.open(request.FILES['picture'])
         picture = picture.resize((wit,hei))
         fig = px.imshow(picture)
         fig.update_layout(coloraxis_showscale=False)
-        fig.update_layout(width=wit, height=hei, margin=dict(l=10, r=10, b=10, t=10))
+        fig.update_layout(width=wit, height=hei, margin=dict(l=0, r=0, b=0, t=0))
         fig.update_xaxes(showticklabels=False).update_yaxes(showticklabels=False)
 
         model = load_model(os.path.join(os.path.dirname(os.path.abspath(__file__)),'2020-11-13--17-15_best'))
@@ -93,10 +95,9 @@ def simple_gesture_recognition(request):
 
         plot_div = plot(fig, output_type='div')
         return render(request,'demoapp1/simple_gesture_recognition.html', context={'plot_div': plot_div,
-                                                                                    'label':label,
-                                                                                    'hue':'hue'})
+                                                                                    'label':label})
     except (ValueError, PIL.UnidentifiedImageError):
-        return render(request,'demoapp1/simple_gesture_recognition.html', context={'ret' : 'Error'})
+        return render(request,'demoapp1/simple_gesture_recognition.html', context={'plot_div' : 'Error'})
     except:
         return render(request,'demoapp1/simple_gesture_recognition.html')
 
@@ -104,93 +105,112 @@ def rps_cnn_details(request):
     return render(request,'demoapp1/rps_cnn_details.html')
 
 def apartment_price_estimator(request):
-    # try:
-    lat = float(request.POST['lat'])
-    lng = float(request.POST['lng'])
-    if request.POST['market'] == 'primary':
-        market = 'pierwotny'
-    elif request.POST['market'] == 'aftermarket':
-        market = 'wtorny'
-    built = float(request.POST['built'])
-    area = float(request.POST['area'])
-    if request.POST['rooms'] == '> 8':
-        rooms = 'więcej niż 8'
-    else:
-        rooms = request.POST['rooms']
-    if request.POST['floor'] == '0':
-        floor = 'parter'
-    elif request.POST['floor'] == '30 or more':
-        floor = 'powyżej 30'
-    else:
-        floor = request.POST['floor']
-    if request.POST['floors'] == '0':
-        floors = '0 (parter)'
-    elif request.POST['floors'] == '30 or more':
-        floors = 'powyżej 30'
-    else:
-        floors = request.POST['floors']
+    try:
+        lat = float(request.POST['lat'])
+        lng = float(request.POST['lng'])
+        if (lat < 48.9 or lat > 54.8) or (lng < 14 or lng > 24.2):
+            raise ValueError('Please select location in Poland')
 
-    # cluster assignment
-    kmeans = joblib.load(os.path.join(os.path.dirname(os.path.abspath(__file__)),'500_means_cls'))
-    cluster = kmeans.predict([[lat,lng]])[0]
+        if request.POST['market'] == 'primary':
+            market = 'pierwotny'
+            market_ret = 'primary'
+        elif request.POST['market'] == 'aftermarket':
+            market = 'wtorny'
+            market_ret = 'aftermarket'
+        built = float(request.POST['built'])
+        area = float(request.POST['area'])
+        if request.POST['rooms'] == '> 8':
+            rooms = 'więcej niż 8'
+        else:
+            rooms = request.POST['rooms']
+        if request.POST['floor'] == '0':
+            floor = 'parter'
+        elif request.POST['floor'] == '30':
+            floor = 'powyżej 30'
+        else:
+            floor = request.POST['floor']
+        if request.POST['floors'] == '0':
+            floors = '0 (parter)'
+        elif request.POST['floors'] == '30':
+            floors = 'powyżej 30'
+        else:
+            floors = request.POST['floors']
+        if int(floor) > int(floors):
+            raise ValueError('Selected floor should be in complience with the total number of floors')
 
-    # preparint input for estimation
-    infile = open(os.path.join(os.path.dirname(os.path.abspath(__file__)),'dummy_apartment_frame'),'rb')
-    dummy_frame = pkl.load(infile)
-    infile.close()
+        # cluster assignment
+        kmeans = joblib.load(os.path.join(os.path.dirname(os.path.abspath(__file__)),'500_means_cls'))
+        cluster = kmeans.predict([[lat,lng]])[0]
 
-    dummy_frame.area = area
-    dummy_frame.build_yr = built
-    if market == 'wtorny':
-        dummy_frame.market_wtorny = 1
-    if rooms != '1':
-        dummy_frame['rooms_' + str(rooms)] = 1
-    if floor != '1':
-        dummy_frame['floor_' + str(floor)] = 1
-    if floors != '0 (parter)':
-        dummy_frame['floors_' + str(floors)] = 1
-    if cluster != 0:
-        dummy_frame['cluster_' + str(cluster)] = 1
+        # preparint input for estimation
+        infile = open(os.path.join(os.path.dirname(os.path.abspath(__file__)),'dummy_apartment_frame'),'rb')
+        dummy_frame = pkl.load(infile)
+        infile.close()
 
-    # ann estimation
-    model_ann = load_model(os.path.join(os.path.dirname(os.path.abspath(__file__)),'500a1_2021-01-13--15-52'))
-    scaler_ann = joblib.load(os.path.join(os.path.dirname(os.path.abspath(__file__)),'scaler_500a1'))
-    pred_ann = model_ann.predict(scaler_ann.transform(dummy_frame))[0][0]
-    pred_ann = int(pred_ann)
+        dummy_frame.area = area
+        dummy_frame.build_yr = built
+        if market == 'wtorny':
+            dummy_frame.market_wtorny = 1
+        if rooms != '1':
+            dummy_frame['rooms_' + str(rooms)] = 1
+        if floor != '1':
+            dummy_frame['floor_' + str(floor)] = 1
+        if floors != '0 (parter)':
+            dummy_frame['floors_' + str(floors)] = 1
+        if cluster != 0:
+            dummy_frame['cluster_' + str(cluster)] = 1
 
-    # random forest estimation
-    model_rf = joblib.load(os.path.join(os.path.dirname(os.path.abspath(__file__)),'random_forest_model_a1'))
-    pred_rf = model_rf.predict(dummy_frame)[0]
-    pred_rf = int(pred_rf)
+        # ann estimation
+        model_ann = load_model(os.path.join(os.path.dirname(os.path.abspath(__file__)),'500a1_2021-01-13--15-52'))
+        scaler_ann = joblib.load(os.path.join(os.path.dirname(os.path.abspath(__file__)),'scaler_500a1'))
+        pred_ann = model_ann.predict(scaler_ann.transform(dummy_frame))[0][0]
+        pred_ann = int(pred_ann)
 
-    # pd.set_option('max_columns', None)
-    print('lat',lat,type(lat),'\n',
-    'lng',lng,type(lng),'\n',
-    'market',market,type(market),'\n',
-    'built',built,type(built),'\n',
-    'area',area,type(area),'\n',
-    'rooms',rooms,type(rooms),'\n',
-    'floor',floor,type(floor),'\n',
-    'floors',floors,type(floors),'\n',
-    'cluster',cluster,type(cluster),'\n\n',
-    'pred_ann',pred_ann,type(pred_ann),'\n',
-    'pred_rf',pred_rf,type(pred_rf),'\n\n',
-    dummy_frame)
+        # random forest estimation
+        model_rf = joblib.load(os.path.join(os.path.dirname(os.path.abspath(__file__)),'random_forest_model_a1'))
+        pred_rf = model_rf.predict(dummy_frame)[0]
+        pred_rf = int(pred_rf)
 
-    return render(request,'demoapp1/apartment_price_estimator.html',
-                    context={
-                    'lat':lat,
-                    'lng':lng,
-                    'market':market,
-                    'built':built,
-                    'area':area,
-                    'rooms':rooms,
-                    'floor':floor,
-                    'floors':floors
-                    })
+        # prices per sqr m
+        pred_ann_m = pred_ann/area
+        pred_rf_m = pred_rf/area
 
-    # except:
-    #     return render(request,'demoapp1/apartment_price_estimator.html')
+        # pd.set_option('max_columns', None)
+        # print('lat',lat,type(lat),'\n',
+        # 'lng',lng,type(lng),'\n',
+        # 'market',market,type(market),'\n',
+        # 'built',built,type(built),'\n',
+        # 'area',area,type(area),'\n',
+        # 'rooms',rooms,type(rooms),'\n',
+        # 'floor',floor,type(floor),'\n',
+        # 'floors',floors,type(floors),'\n',
+        # 'cluster',cluster,type(cluster),'\n\n',
+        # 'pred_ann',pred_ann,type(pred_ann),'\n',
+        # 'pred_rf',pred_rf,type(pred_rf),'\n\n',
+        # dummy_frame)
+
+        return render(request,'demoapp1/apartment_price_estimator.html',
+                        context={
+                        'lat':round(lat,4),
+                        'lng':round(lng,4),
+                        'market':market_ret,
+                        'built':int(built),
+                        'area':int(area),
+                        'rooms':rooms,
+                        'floor':floor,
+                        'floors':floors,
+                        'pred_ann':pred_ann,
+                        'pred_rf':pred_rf,
+                        'pred_ann_m':int(pred_ann_m),
+                        'pred_rf_m':int(pred_rf_m)
+                        })
+    except (ValueError) as e:
+        print(e)
+        return render(request,'demoapp1/apartment_price_estimator.html', context={'pred_ann':'Error',
+                                                                                    'e':e})
+
+    except:
+        return render(request,'demoapp1/apartment_price_estimator.html')
 
 def under_construction(request):
     return render(request,'demoapp1/under_construction.html')

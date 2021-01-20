@@ -21,10 +21,52 @@
 <div class="container">
   <div class="row">
     <div class="col-md-6" style='margin: 3rem auto;'>
+      <h4>Apartment price esrimator</h4>
+      <br>
+      {% if pred_ann and pred_ann != 'Error' %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+          <strong>Selected parameters:</strong><br>
+          Latitude: {{ lat }}<br>
+          Longitude: {{ lng }}<br>
+          Market type: {{ market }}<br>
+          Built year: {{ built }}<br>
+          Area: {{ area }}m<sup>2</sup><br>
+          Total number of rooms: {{ rooms }}<br>
+          Floor: {{ floor }}<br>
+          Total number of floors: {{ floors }}<br>
+          <br>
+          Appartment price according to the neural network estimator:<br>
+          <strong>
+          {{ pred_ann }} PLN<br>
+          {{ pred_ann_m }} PLN/m<sup>2</sup><br>
+          </strong>
+          <br>
+          Appartment price according to the random forest estimator:<br>
+          <strong>
+          {{ pred_rf }} PLN<br>
+          {{ pred_rf_m }} PLN/m<sup>2</sup><br><br>
+          </strong>
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <a href="{% url 'demoapp1:rps_cnn_details' %}" class="btn btn-info btn-sm" role="button" style='margin: 1rem 0;'>
+            Click here for more details about the models
+          </a>
+        </div>
+      {% elif pred_ann == 'Error' %}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+          <strong>{{ e }}</strong>
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+      {% endif %}
+      <br>
+
         <form id="form" method="post" class="needs-validation" novalidate>
           {% csrf_token %}
           <div class="form-group">
-            <label>Please select the apartment location on the map and its parameters:</label>
+            <label>Please select apartment location inside the polish borders and its parameters:</label>
             <br><br>
             <div id='mapid'></div>
             <br>
@@ -98,24 +140,22 @@
               <div class="col-lg-3">
                 <select id='floor' class="custom-select" name="floor" required>
                   <option selected disabled value=""></option>
-                  {% with ''|center:30 as range %}
+                  {% with ''|center:31 as range %}
                   {% for _ in range %}
                     <option>{{ forloop.counter|add:"-1" }}</option>
                   {% endfor %}
                   {% endwith %}
-                  <option>30 or more</option>
                 </select>
               </div>
               <label for="floors" class="col-lg-3 col-form-label">floors:</label>
               <div class="col-lg-3">
                 <select id='floors' class="custom-select" name="floors" required>
                   <option selected disabled value=""></option>
-                  {% with ''|center:30 as range %}
+                  {% with ''|center:31 as range %}
                   {% for _ in range %}
                     <option>{{ forloop.counter|add:"-1" }}</option>
                   {% endfor %}
                   {% endwith %}
-                  <option>30 or more</option>
                 </select>
               </div>
             </div>
@@ -130,10 +170,10 @@
           </div>
         </form>
 
+
+
     </div>
-
   </div>
-
 </div>
 
 

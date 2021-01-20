@@ -10,54 +10,61 @@
 <div class="container">
   <div class="row">
     <div class="col-md-6" style='margin: 3rem auto;'>
-        <form id="form" method="post" enctype="multipart/form-data">
-          {% csrf_token %}
-          <div class="form-group">
-            <label>Please upload picture of a hand gesture representing the Rock Paper Scissors game call:</label>
-            <br><br>
-            <div class="custom-file">
-              <input type="file" class="custom-file-input" id="validatedCustomFile" name='picture' accept=".jpg,.png" required>
-              <label class="custom-file-label" for="validatedCustomFile">Choose file</label>
-            </div>
-            <small id="emailHelp" class="form-text text-muted">
-              <p>Picture should be taken on a dark uniform surface under diffused lighting condition.<br>
-                Max file size: 4MB<br>
-                Format: JPEG, PNG<br>
-              </p>
-            </small>
-            <a href="{% url 'demoapp1:rps_cnn_details' %}" class="badge badge-pill badge-info">More details about the CNN model</a>
+      <h4>Rock Paper Scissors game call gesture recognition</h4>
+      <br>
+      <form id="form" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-group">
+          <label>Please upload a picture of a hand gesture game call:</label>
+          <br>
+          <div class="custom-file">
+            <input type="file" class="custom-file-input" id="validatedCustomFile" name='picture' accept=".jpg,.png" required>
+            <label class="custom-file-label" for="validatedCustomFile">Choose file</label>
           </div>
-          <button type="submit" class="btn btn-success">Upload</button>
-          <div class='row'>
-            <div class="col-md-3" style='margin: 1rem auto;'>
-              <div id='spinner'></div>
-            </div>
+          <small id="emailHelp" class="form-text text-muted">
+            <p>Picture should be taken on a dark uniform surface under diffused lighting condition.<br>
+              Max file size: 4MB<br>
+              Format: JPEG, PNG<br>
+            </p>
+          </small>
+
+        </div>
+        <button type="submit" class="btn btn-success">Upload</button>
+        <div class='row'>
+          <div class="col-md-3" style='margin: 1rem auto;'>
+            <div id='spinner'></div>
           </div>
+        </div>
 
-        </form>
+      </form>
 
-        <br>
+      <br>
 
-        {% if hue and ret != 'Error' %}
-          <div class="container">
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-              <strong>{{ label }}</strong>
-              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            {% autoescape off %}
-            {{ plot_div }}
-            {% endautoescape %}
-          </div>
-        {% elif ret == 'Error' %}
-          <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <strong>Error</strong>
+      {% if plot_div and plot_div != 'Error' %}
+          <div class="alert alert-success alert-dismissible fade show" role="alert">
+            The picture you uploaded is showing a
+            <strong>{{ label }}</strong> gesture<br><br>
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
+            <div class="container">
+              {% autoescape off %}
+              {{ plot_div }}
+              {% endautoescape %}
+            </div>
+            <a href="{% url 'demoapp1:rps_cnn_details' %}" class="btn btn-info btn-sm" role="button" style='margin: 1rem 0;'>
+              Click here for more details about the CNN model
+            </a>
           </div>
-        {% endif %}
+
+      {% elif plot_div == 'Error' %}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+          <strong>Something went wrong, please try again.</strong>
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+      {% endif %}
 
 
 
