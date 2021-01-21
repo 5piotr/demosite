@@ -14,7 +14,7 @@
       <p class="my_p">
         This is a convolutional neural network trained to classify images of the Rock Paper Scissors game calls.
         Neural network performing this classification has been trained on a farely small image data set containing
-        a total of 2188 similarly oriented images. CNN is composed of following layers:
+        a total of 2188 similarly oriented images. CNN is composed of the following layers:
       </p>
       <dl class="row">
         <dt class="col-sm-3">Convolution</dt>
@@ -49,7 +49,7 @@
       <h4 class="my_h4">Alternative approach... that filed</h4>
       <p class='my_p'>
         Natural assumption is that images preprocessed in a smart way, containing only valuable imformaion are better input for training the network.
-        It seams that the only valiuable information in that case is the contour of the hand. Below are test results of a network trained
+        It seams that the only valiuable information in that case is the contour of the hand. Below are the test results of a network trained
         on images with grayscale and edge recognition filters applied:
       </p>
       <img src="{% static 'demoapp1/images/predictor_rotate_edge_rec.jpg' %}" class='img-fluid' alt="">
@@ -60,11 +60,21 @@
       <h4 class="my_h4">For best classification results</h4>
       <p class='my_p'>
         All images in the train and test sets have been reoriented to in the following maner. The hand is reaching from the bottom left cornerer
-        to the middle of the frame. In ideal scenario the user of this app will use right hand to take a picture of left hand.
+        to the middle of the frame. In ideal scenario the user of this app will use his right hand to take a picture of his left hand.
         The resulting picture should be well oriented for the classification. Results are also improved when:<br>
-        - background is dark or highly contrasting, uniform and non reflective,<br>
-        - lighting conditions are uniform/diffussed which is hiding the hand texture,<br>
-        - shadows are not visible.
+        <ul>
+          <li>background is dark or highly contrasting, uniform and non reflective</li>
+          <li>lighting conditions are uniform/diffussed which is hiding the hand texture</li>
+          <li>shadows are not visible</li>
+        </ul>
+      </p>
+      <h4 class="my_h4">Data set for training</h4>
+      <p class='my_p'>
+        CNN model has been trained on a
+        <a href="https://www.kaggle.com/drgfreeman/rockpaperscissors">dataset available on Kaggle</a>
+        under license:
+        <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>
+        <br>
       </p>
     </div>
 

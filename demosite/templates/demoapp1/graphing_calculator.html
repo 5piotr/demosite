@@ -5,35 +5,37 @@
 {% endblock %}
 
 {% block body_block %}
+{% load static %}
 
 <div class="container">
   <div class="row">
     <div class="col-md-6" style='margin: 3rem auto;'>
       <h4>Graphing Calculator</h4>
       <br>
-      <form method="post">
+      <form id="form" method="post" class="needs-validation" novalidate>
         {% csrf_token %}
         <div class="form-group">
           <label>Please enter equation as a function of x and its domain:</label>
-          <div style="display:flex; flex-direction: row; justify-content: center; align-items: center">
-            <b>f(x)=</b>
-            <input type="text" class="form-control" name='equation'>
+          {# row 1 #}
+          <div class="row">
+            <label for="equation" class="col-lg-1 col-form-label"><b>f(x)=</b></label>
+            <div class="col-lg-11">
+              <input id="equation" class="form-control" type="text" value="" name="equation" required>
+            </div>
           </div>
           <br>
-          <div class='row'>
-            <div class="col-lg-4">
-              <div style="display:flex; flex-direction: row; justify-content: center; align-items: center">
-                <b>x_min=</b>
-                <input type="text" class="form-control" name='x_min' value="-10">
-              </div>
+          {# row 2 #}
+          <div class="row">
+            <label for="x_min" class="col-lg-1 col-form-label"><b>x<sub>min</sub>=</b></label>
+            <div class="col-lg-5">
+              <input id="x_min" class="form-control" type="text" value="-10" name="x_min" required pattern="^-?\d+(\.\d+)?$">
             </div>
-            <div class="col-lg-4">
-              <div style="display:flex; flex-direction: row; justify-content: center; align-items: center">
-                <b>x_max=</b>
-                <input type="text" class="form-control" name='x_max' value="10">
-              </div>
+            <label for="x_max" class="col-lg-1 col-form-label"><b>x<sub>max</sub>=</b></label>
+            <div class="col-lg-5">
+              <input id="x_max" class="form-control" type="text" value="10" name="x_max" required pattern="^-?\d+(\.\d+)?$">
             </div>
           </div>
+          <br>
           <small id="emailHelp" class="form-text text-muted">
             Example:<br>
             f(x) = x**2+3*x+5<br>
@@ -48,17 +50,17 @@
   </div>
     <div class="row">
 
-      {% if plot_div %}
+      {% if plot_div and plot_div != 'Error' %}
         <div class="col">
           {% autoescape off %}
           {{ plot_div }}
           {% endautoescape %}
         </div>
 
-      {% elif ret == 'Error' %}
+      {% elif plot_div == 'Error' %}
         <div class="col-md-6" style='margin: 1rem auto;'>
           <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <strong>Error</strong>
+            <strong>Please review the equation and try again.</strong>
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
@@ -70,4 +72,5 @@
 
 </div>
 
+<script src="{% static 'demoapp1/js/graphing_calculator.js' %}"></script>
 {% endblock %}
