@@ -42,7 +42,7 @@
         Before feeding to the network images are being scaled to 90 x 60 pixels. Color information is beeing retained.
         Despite small training set, the network is having farely good results on examples from outside of the train/test batches:
       </p>
-      <img src="{% static 'demoapp1/images/predictor_rotated.jpg' %}" class='img-fluid' alt="">
+      <img src="{% static 'demoapp1/images/rps/predictor_rotated.jpg' %}" class='img-fluid' alt="">
       <p class='my_p'>
         Those are the best results so far.
       </p>
@@ -52,7 +52,7 @@
         It seams that the only valiuable information in that case is the contour of the hand. Below are the test results of a network trained
         on images with grayscale and edge recognition filters applied:
       </p>
-      <img src="{% static 'demoapp1/images/predictor_rotate_edge_rec.jpg' %}" class='img-fluid' alt="">
+      <img src="{% static 'demoapp1/images/rps/predictor_rotate_edge_rec.jpg' %}" class='img-fluid' alt="">
       <p class='my_p'>
         The overall results are worse in that case. Despite the filters, the images are still retaining lot of useless noise
         and the edge recognition is still far from ideal. This method still requires more investigation.

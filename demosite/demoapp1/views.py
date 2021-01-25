@@ -211,5 +211,8 @@ def apartment_price_estimator(request):
     except:
         return render(request,'demoapp1/apartment_price_estimator.html')
 
+def apartment_estimator_details(request):
+    return render(request,'demoapp1/apartment_estimator_details.html')
+
 def under_construction(request):
     return render(request,'demoapp1/under_construction.html')

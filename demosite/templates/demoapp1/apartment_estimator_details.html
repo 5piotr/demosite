@@ -1,0 +1,219 @@
+{% extends "demoapp1/base.html" %}
+
+{% block title %}
+<title>Apartment Estimator Details</title>
+{% endblock %}
+
+{% block body_block %}
+{% load static %}
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-8" style='margin: 0 auto;'>
+      <h4 class="my_h4">The Estimator</h4>
+      <p class="my_p">
+        This is an estimator designed to predict apartment prices on the polish real estate market.
+        Below you can find information about its creation, methods used and evaluation.
+      </p>
+      <h4 class="my_h4">Web scraping</h4>
+      <p class="my_p">
+        Data required for training of the models have been acquired via web scraping from a polish auction portal.
+        Automatic data acquisition is not prohibited by portals terms of use. The procedure did not interfere
+        with it's the functioning.<br>
+        It took 2 hours to get the list of unique auction links and additional 12 hours to get auction details.
+        The result was a set of 90k data points with 21 parameters each.
+      </p>
+      <h4 class="my_h4">Data preparation</h4>
+      <p class="my_p">
+        Some parameters had to be discarded. They were defined only for a small amount of data points so
+        would turn useless during model training. Other data points ware missing a crucial information necessary for training
+        like price and location. Those whole data points also had to be removed.<br>
+        The data set was further reduced by filtering out the outliers. The arbitrary rules for this ware for example:
+        the apartment needs to have at least 15m<sup>2</sup> and price between 20k PLN and 20M PLN.
+        Those operations reduced the data set to 54k data points and 14 parameters.<br>
+        The location information in the data set is repetitive. It is defined by geographic coordinates and address information.
+        This will help during data analysis, but model will be trained only with transformed latitude and longitude parameters.
+      </p>
+      <h4 class="my_h4">Data analysis</h4>
+      <p class="my_p">
+        Here are statistical information describing the data set. Prices are in PLN.
+      </p>
+      <figure class="figure">
+        <figcaption class="figure-caption">Apartment data set statistics.</figcaption>
+        <img src="{% static 'demoapp1/images/apartment_est/data_statistics.png' %}" class='figure-img img-fluid rounded' alt="">
+      </figure>
+      <img src="{% static 'demoapp1/images/apartment_est/price_dist.png' %}" class='figure-img img-fluid rounded' alt="">
+      <img src="{% static 'demoapp1/images/apartment_est/price_m2_dist.png' %}" class='figure-img img-fluid rounded' alt="">
+      <img src="{% static 'demoapp1/images/apartment_est/area_dist.png' %}" class='figure-img img-fluid rounded' alt="">
+      <img src="{% static 'demoapp1/images/apartment_est/floor_dist.png' %}" class='figure-img img-fluid rounded' alt="">
+      <img src="{% static 'demoapp1/images/apartment_est/floors_dist.png' %}" class='figure-img img-fluid rounded' alt="">
+      <img src="{% static 'demoapp1/images/apartment_est/built_dist.png' %}" class='figure-img img-fluid rounded' alt="">
+      <img src="{% static 'demoapp1/images/apartment_est/built_dist_2000_2020.png' %}" class='figure-img img-fluid rounded' alt="">
+      <p class="my_p">
+        Here is comparison of prices per m<sup>2</sup> across the voivodeships:
+      </p>
+      <img src="{% static 'demoapp1/images/apartment_est/price_v_box.png' %}" class='figure-img img-fluid rounded' alt="">
+      <img src="{% static 'demoapp1/images/apartment_est/price_v_box_z.png' %}" class='figure-img img-fluid rounded' alt="">
+      <p class="my_p">
+        In some voivodeships the aftermarket apartments are more expensive than new ones. In their capital cities:
+        Warsaw, Krakow, Wroclaw, Gdansk the city centers don't have much space for new buildings so the aftermarket
+        is dominated by used apartments. There are a lot of outliers above the Q3+1.5IQR level. The prices are pushed to the extreme.
+      </p>
+      <p class="my_p">
+        The next set of plots is showing the dependencies between price and area:
+      </p>
+      <img src="{% static 'demoapp1/images/apartment_est/price_to_area.png' %}" class='figure-img img-fluid rounded' alt="">
+      <img src="{% static 'demoapp1/images/apartment_est/avg_price_to_area.png' %}" class='figure-img img-fluid rounded' alt="">
+      <img src="{% static 'demoapp1/images/apartment_est/avg_m_price_to_area.png' %}" class='figure-img img-fluid rounded' alt="">
+      <p class="my_p">
+        The lowest price per m<sup>2</sup> is on apartments between 55 and 65m<sup>2</sup>.
+      </p>
+      <p class="my_p">
+        Below you can see price information in relation to geolocation.
+      </p>
+      <figure class="figure">
+        <figcaption class="figure-caption">Apartments with prices below 1M PLN</figcaption>
+        <img src="{% static 'demoapp1/images/apartment_est/map_price_below_m.png' %}" class='figure-img img-fluid rounded' alt="">
+      </figure>
+      <figure class="figure">
+        <figcaption class="figure-caption">Apartments in Warsaw with prices below 1M PLN</figcaption>
+        <img src="{% static 'demoapp1/images/apartment_est/map_price_below_m_warsaw.png' %}" class='figure-img img-fluid rounded' alt="">
+      </figure>
+      <figure class="figure">
+        <figcaption class="figure-caption">Apartments with prices above 1M PLN (5000 out of 54k data points)</figcaption>
+        <img src="{% static 'demoapp1/images/apartment_est/map_price_above_m.png' %}" class='figure-img img-fluid rounded' alt="">
+      </figure>
+      <figure class="figure">
+        <figcaption class="figure-caption">Apartments with prices below 15k PLN per m<sup>2</sup></figcaption>
+        <img src="{% static 'demoapp1/images/apartment_est/map_pricem_below_15.png' %}" class='figure-img img-fluid rounded' alt="">
+      </figure>
+      <figure class="figure">
+        <figcaption class="figure-caption">Apartments in Warsaw with prices below 15k PLN per m<sup>2</sup></figcaption>
+        <img src="{% static 'demoapp1/images/apartment_est/map_pricem_below_15_warsaw.png' %}" class='figure-img img-fluid rounded' alt="">
+      </figure>
+      <figure class="figure">
+        <figcaption class="figure-caption">Apartments in Krakow with prices below 15k PLN per m<sup>2</sup></figcaption>
+        <img src="{% static 'demoapp1/images/apartment_est/map_pricem_below_15_krakow.png' %}" class='figure-img img-fluid rounded' alt="">
+      </figure>
+      <figure class="figure">
+        <figcaption class="figure-caption">Apartments with prices above 15k PLN per m<sup>2</sup> (4000 out of 54k data points)</figcaption>
+        <img src="{% static 'demoapp1/images/apartment_est/map_pricem_above_15.png' %}" class='figure-img img-fluid rounded' alt="">
+      </figure>
+      <figure class="figure">
+        <figcaption class="figure-caption">Apartments in Warsaw with prices above 15k PLN per m<sup>2</sup></figcaption>
+        <img src="{% static 'demoapp1/images/apartment_est/map_pricem_above_15_warsaw.png' %}" class='figure-img img-fluid rounded' alt="">
+      </figure>
+      <p class="my_p">
+        For the 90% of data points (price < 1M or price per m<sup>2</sup> < 15k) there is a clear geo-pattern.
+      </p>
+      <h4 class="my_h4">K-means clustering</h4>
+      <p class="my_p">
+        It is best to train the model on geolocation data organized into bins. Otherwise, the model will struggle to find patterns
+        in two-dimensional continuous plane with many local extremes. Final price is driven by the coordinate values, but it is not
+        proportional to them. There are two ways to achieve that. The first one is to use city/district values. They are naturally organizing
+        the data into bins. However, it is getting problematic to assign new points to those bins. It requires address analysis and
+        validation. Also, it is very likely the model in not training on all possible locations. It will not be able to predict output for
+        locations that it hasn't seen before.<br>
+        The second way to organize the geolocation data is to use latitude and longitude values to create virtual bins. Covering the area
+        by grid with predefined resolution will make easy to group the existing data points and also to put any given point into already
+        existing bin.
+      </p>
+      <figure class="figure">
+        <figcaption class="figure-caption">Apartmen map covered by 25x25 grid</figcaption>
+        <img src="{% static 'demoapp1/images/apartment_est/grid_bins.png' %}" class='figure-img img-fluid rounded' alt="">
+      </figure>
+      <p class="my_p">
+        This method is simple but unfortunately not efficient. It is visible after zooming the map.
+      </p>
+      <figure class="figure">
+        <figcaption class="figure-caption">Apartmen map of Warsaw covered by grid</figcaption>
+        <img src="{% static 'demoapp1/images/apartment_est/grid_bins_warsaw.png' %}" class='figure-img img-fluid rounded' alt="">
+      </figure>
+      <p class="my_p">
+        Even the 625 bins grid is not enough to reflect the complexity of apartment price structure on the city level.
+        There are also bins that are completely empty, with no points to train the model. To correctly group the data at least
+        x10 higher resolution is required.
+      </p>
+      <figure class="figure">
+        <figcaption class="figure-caption">Apartmen map of Warsaw covered by x10 denser grid than the previous map</figcaption>
+        <img src="{% static 'demoapp1/images/apartment_est/grid_bins_warsaw2.png' %}" class='figure-img img-fluid rounded' alt="">
+      </figure>
+      <p class="my_p">
+        x10 denser grid means that there are now 62.5k bins with only small amount of them covered by data points. This is clearly not
+        a correct approach.
+      </p>
+      <p class="my_p">
+        There is a better way, the k-means clustering algorithm. It is grouping the locations into a predefined number of bins-clusters.
+        The cluster size is correlated to point occurrence density. More dense regions have smaller clusters and less dense bigger ones.
+        Clustering performed for this project has been done only on latitude and longitude values, so it is purely geometric.
+        Despite the simplicity it is doing a good job. Here is the clustering visualization for the whole country. 500 clusters have been used.
+      </p>
+      <figure class="figure">
+        <figcaption class="figure-caption">Country map covered by 500 clusters</figcaption>
+        <img src="{% static 'demoapp1/images/apartment_est/clustering_country.png' %}" class='figure-img img-fluid rounded' alt="">
+      </figure>
+      <p class="my_p">
+        There are no empty clusters. Each one has different size and shape. In the areas between cities where there aren't many apatrments
+        on sale the clusters are big. They are getting smaller the closer to cities they are and even finer in the city centers.
+        This behavior is beneficial to price estimator because the apartment prices are changing quickly on small distances in the cities and
+        are stable on bigger areas between them. The city clusters are more or less reflecting the district structure or at least they are
+        in the same size range.
+      </p>
+      <figure class="figure">
+        <figcaption class="figure-caption">Warsaw map covered by clusters</figcaption>
+        <img src="{% static 'demoapp1/images/apartment_est/clustering_warsaw.png' %}" class='figure-img img-fluid rounded' alt="">
+      </figure>
+      <p class="my_p">
+        The cluster amount selection is purely arbitrary and was determined by experiment. Different values have been tested
+        and 500 seems to be a correct balance between accuracy and efficiency. Below you can see how the prices (represented by dot size)
+        are correlating with the clusters (represented by dot color).
+      </p>
+      <figure class="figure">
+        <figcaption class="figure-caption">Warsaw apartment map. Clusters are represented by colors and prices by dot sizes.</figcaption>
+        <img src="{% static 'demoapp1/images/apartment_est/clustering_warsaw2.png' %}" class='figure-img img-fluid rounded' alt="">
+      </figure>
+      <h4 class="my_h4">Random forest estimator</h4>
+      <p class="my_p">
+        
+      </p>
+
+      <dl class="row">
+        <dt class="col-sm-3">Convolution</dt>
+        <dd class="col-sm-9">128 filters with size 3x3, ReLU activation</dd>
+        <dt class="col-sm-3">Pooling</dt>
+        <dd class="col-sm-9">size 2x2</dd>
+        <dt class="col-sm-3">Convolution</dt>
+        <dd class="col-sm-9">64 filters with size 3x3, ReLU activation</dd>
+        <dt class="col-sm-3">Pooling</dt>
+        <dd class="col-sm-9">size 2x2</dd>
+        <dt class="col-sm-3">Convolution</dt>
+        <dd class="col-sm-9">32 filters with size 3x3, ReLU activation</dd>
+        <dt class="col-sm-3">Pooling</dt>
+        <dd class="col-sm-9">size 2x2</dd>
+        <dt class="col-sm-3">Flatten</dt>
+        <dd class="col-sm-9">&nbsp;</dd>
+        <dt class="col-sm-3">Dense</dt>
+        <dd class="col-sm-9">128 units, ReLU activation</dd>
+        <dt class="col-sm-3">Dropout</dt>
+        <dd class="col-sm-9">50%</dd>
+        <dt class="col-sm-3">Dense</dt>
+        <dd class="col-sm-9">3 units, categorical cross-entropy activation</dd>
+      </dl>
+      <p class='my_p'>
+        Before feeding to the network images are being scaled to 90 x 60 pixels. Color information is beeing retained.
+        Despite small training set, the network is having farely good results on examples from outside of the train/test batches:
+      </p>
+      <img src="{% static 'demoapp1/images/predictor_rotated.jpg' %}" class='img-fluid' alt="">
+      <p class='my_p'>
+        Those are the best results so far.
+      </p>
+
+
+    </div>
+
+  </div>
+
+</div>
+
+
+{% endblock %}

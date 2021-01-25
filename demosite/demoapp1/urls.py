@@ -11,5 +11,6 @@ urlpatterns = [
     path('simple_gesture_recognition/', views.simple_gesture_recognition, name='simple_gesture_recognition'),
     path('rps_cnn_details/', views.rps_cnn_details, name='rps_cnn_details'),
     path('apartment_price_estimator/', views.apartment_price_estimator, name='apartment_price_estimator'),
+    path('apartment_estimator_details/', views.apartment_estimator_details, name='apartment_estimator_details'),
     path('under_construction/',views.under_construction, name='under_construction'),
 ]
