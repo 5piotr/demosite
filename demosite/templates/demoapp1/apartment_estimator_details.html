@@ -13,15 +13,14 @@
       <h4 class="my_h4">The Estimator</h4>
       <p class="my_p">
         This is an estimator designed to predict apartment prices on the polish real estate market.
+        It is outputting 2 prices. One comes from random forest model, the other from artificial neural network.
         Below you can find information about its creation, methods used and evaluation.
       </p>
       <h4 class="my_h4">Web scraping</h4>
       <p class="my_p">
         Data required for training of the models have been acquired via web scraping from a polish auction portal.
         Automatic data acquisition is not prohibited by portals terms of use. The procedure did not interfere
-        with it's the functioning.<br>
-        It took 2 hours to get the list of unique auction links and additional 12 hours to get auction details.
-        The result was a set of 90k data points with 21 parameters each.
+        with it's the functioning. The result was a set of 90k data points with 21 parameters each.
       </p>
       <h4 class="my_h4">Data preparation</h4>
       <p class="my_p">
@@ -39,7 +38,7 @@
         Here are statistical information describing the data set. Prices are in PLN.
       </p>
       <figure class="figure">
-        <figcaption class="figure-caption">Apartment data set statistics.</figcaption>
+        <figcaption class="figure-caption">Apartment data set statistics</figcaption>
         <img src="{% static 'demoapp1/images/apartment_est/data_statistics.png' %}" class='figure-img img-fluid rounded' alt="">
       </figure>
       <img src="{% static 'demoapp1/images/apartment_est/price_dist.png' %}" class='figure-img img-fluid rounded' alt="">
@@ -172,42 +171,106 @@
         <figcaption class="figure-caption">Warsaw apartment map. Clusters are represented by colors and prices by dot sizes.</figcaption>
         <img src="{% static 'demoapp1/images/apartment_est/clustering_warsaw2.png' %}" class='figure-img img-fluid rounded' alt="">
       </figure>
-      <h4 class="my_h4">Random forest estimator</h4>
       <p class="my_p">
-        
+        Cluster parameter has been added to the data set a redundant location information (address and geolocation) removed.
+        All parameters besides area and build year were treated as categories and required creation of dummy variables.
+        After all transformations the final set has 54k data points and 575 features.
       </p>
-
+      <h4 class="my_h4">Random forest regression</h4>
+      <p class="my_p">
+        The number of estimators for random forest regressor have been selected by grid search algorithm. Different amount have been
+        tested, from 10 to 1000. With increasing number of estimators the model performance improvement was small so finally selected amount
+        is 30. The small number of estimators is improving model size and estimation time and better prevents overfitting.<br>
+        The R<sup>2</sup> score for this model is 0.83 as established by 10-fold cross validation. Below you can see a comparison
+        between the test data and the predictions and error distribution.
+      </p>
+      <div class="container row justify-content-center">
+        <figure class="figure">
+          <figcaption class="figure-caption">
+            Comparison between the test data and the random forest predictions<br>
+            (red line is representing ideal model)
+          </figcaption>
+          <img src="{% static 'demoapp1/images/apartment_est/rf_comparison.png' %}" class='figure-img img-fluid rounded' alt="">
+        </figure>
+      </div>
+      <br>
+      <div class="container row justify-content-center">
+        <figure class="figure">
+          <figcaption class="figure-caption">Random forest error distribution for test predictions</figcaption>
+          <img src="{% static 'demoapp1/images/apartment_est/rf_error.png' %}" class='figure-img img-fluid rounded' alt="">
+        </figure>
+      </div>
+      <h4 class="my_h4">Artificial neural network estimator</h4>
+      <p class="my_p">
+        Data set has been scaled before feeding to the ANN. The model is composed of the following layers:
+      </p>
       <dl class="row">
-        <dt class="col-sm-3">Convolution</dt>
-        <dd class="col-sm-9">128 filters with size 3x3, ReLU activation</dd>
-        <dt class="col-sm-3">Pooling</dt>
-        <dd class="col-sm-9">size 2x2</dd>
-        <dt class="col-sm-3">Convolution</dt>
-        <dd class="col-sm-9">64 filters with size 3x3, ReLU activation</dd>
-        <dt class="col-sm-3">Pooling</dt>
-        <dd class="col-sm-9">size 2x2</dd>
-        <dt class="col-sm-3">Convolution</dt>
-        <dd class="col-sm-9">32 filters with size 3x3, ReLU activation</dd>
-        <dt class="col-sm-3">Pooling</dt>
-        <dd class="col-sm-9">size 2x2</dd>
-        <dt class="col-sm-3">Flatten</dt>
-        <dd class="col-sm-9">&nbsp;</dd>
-        <dt class="col-sm-3">Dense</dt>
-        <dd class="col-sm-9">128 units, ReLU activation</dd>
-        <dt class="col-sm-3">Dropout</dt>
-        <dd class="col-sm-9">50%</dd>
-        <dt class="col-sm-3">Dense</dt>
-        <dd class="col-sm-9">3 units, categorical cross-entropy activation</dd>
+        <dt class="col-sm-3">1<sup>st</sup> hidden layer</dt>
+        <dd class="col-sm-9">16 neurons, ReLU activation</dd>
+        <dt class="col-sm-3">2<sup>nd</sup> hidden layer</dt>
+        <dd class="col-sm-9">16 neurons, ReLU activation</dd>
+        <dt class="col-sm-3">3<sup>rd</sup> hidden layer</dt>
+        <dd class="col-sm-9">8 neurons, ReLU activation</dd>
+        <dt class="col-sm-3">4<sup>th</sup> hidden layer</dt>
+        <dd class="col-sm-9">8 neurons, ReLU activation</dd>
+        <dt class="col-sm-3">Output layer</dt>
+        <dd class="col-sm-9">1 neuron, ReLU activation</dd>
       </dl>
       <p class='my_p'>
-        Before feeding to the network images are being scaled to 90 x 60 pixels. Color information is beeing retained.
-        Despite small training set, the network is having farely good results on examples from outside of the train/test batches:
+        Training has been performed with early stopping and batch size of 256. It took 209 epochs. The R<sup>2</sup> score for this model is 0.82.
+        Below you can see the loss plot, a comparison between the test data and the predictions and error distribution.
       </p>
-      <img src="{% static 'demoapp1/images/predictor_rotated.jpg' %}" class='img-fluid' alt="">
-      <p class='my_p'>
-        Those are the best results so far.
+      <div class="container row justify-content-center">
+        <figure class="figure">
+          <figcaption class="figure-caption">Loss and validation loss during training of the model</figcaption>
+          <img src="{% static 'demoapp1/images/apartment_est/ann_loss.png' %}" class='figure-img img-fluid rounded' alt="">
+        </figure>
+      </div>
+      <br>
+      <div class="container row justify-content-center">
+        <figure class="figure">
+          <figcaption class="figure-caption">
+            Comparison between the test data and the ANN predictions<br>
+            (red line is representing ideal model)
+          </figcaption>
+          <img src="{% static 'demoapp1/images/apartment_est/ann_comparison.png' %}" class='figure-img img-fluid rounded' alt="">
+        </figure>
+      </div>
+      <div class="container row justify-content-center">
+        <figure class="figure">
+          <figcaption class="figure-caption">ANN error distribution for test predictions</figcaption>
+          <img src="{% static 'demoapp1/images/apartment_est/ann_error.png' %}" class='figure-img img-fluid rounded' alt="">
+        </figure>
+      </div>
+      <h4 class="my_h4">Models comparison and evaluation</h4>
+      <p class="my_p">
+        In order to compare the models a special data frame has been prepared. Its data points are covering the whole country and
+        besides the location, every other parameter is the same. They are describing the same, most common type of apartment.
+        This frame was fed through both models and absolute differences between each estimation have been saved and transformed
+        into a heat map.
       </p>
-
+      <figure class="figure">
+        <figcaption class="figure-caption">Estimation absolute difference heat map</figcaption>
+        <img src="{% static 'demoapp1/images/apartment_est/heat_map.png' %}" class='figure-img img-fluid rounded' alt="">
+      </figure>
+      <p class="my_p">
+        It is safe to say that this absolute difference is a good indicator of estimation reliability. When it is close to zero,
+        this means that both models managed to find the same regularities/dependencies and present good estimations. The probability
+        that those regularities/dependencies are correct is high. On the other hand when the difference is big, the models are
+        struggling and it is more sure that they are further from the truth.<br>
+        Some clusters are showing big differences between both estimations. The reason for that is visible after updating the map
+        with the points on which the models ware trained.
+      </p>
+      <figure class="figure">
+        <figcaption class="figure-caption">Estimation absolute difference heat map with data points used for training</figcaption>
+        <img src="{% static 'demoapp1/images/apartment_est/heat_map2.png' %}" class='figure-img img-fluid rounded' alt="">
+      </figure>
+      <p class="my_p">
+        Better results are visible on the clusters with the most points, in the cities and in suburban areas where the apartment
+        trade is taking place. In those clusters the models had a lot of points to train on. Model accuracy
+        is proportional to the amount of data used during training.<br>
+        The models are showing high accuracy in the regions that this estimator will be most likely to be used.
+      </p>
 
     </div>
 

@@ -160,7 +160,7 @@ def apartment_price_estimator(request):
             dummy_frame['cluster_' + str(cluster)] = 1
 
         # ann estimation
-        model_ann = load_model(os.path.join(os.path.dirname(os.path.abspath(__file__)),'500a1_2021-01-13--15-52'))
+        model_ann = load_model(os.path.join(os.path.dirname(os.path.abspath(__file__)),'500a1_2021-01-27--18-09'))
         scaler_ann = joblib.load(os.path.join(os.path.dirname(os.path.abspath(__file__)),'scaler_500a1'))
         pred_ann = model_ann.predict(scaler_ann.transform(dummy_frame))[0][0]
         pred_ann = int(pred_ann)
