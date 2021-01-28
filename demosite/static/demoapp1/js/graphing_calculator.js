@@ -13,6 +13,21 @@
         }
         form.classList.add('was-validated');
 
+        // spinner
+        $('#form').on('change', function() {
+          $(".btn").click(function() {
+            // disable button
+            // $(this).prop("disabled", true);
+            // add spinner to button
+            $('#spinner').html(
+              `<div class="d-flex align-items-center">
+                <strong>Loading...</strong>
+                <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div>
+              </div>`
+            );
+          });
+        });
+
       }, false);
 
     });
@@ -20,18 +35,3 @@
   }, false);
 
 })();
-
-// spinner
-$('#form').on('change', function() {
-  $(".btn").click(function() {
-    // disable button
-    // $(this).prop("disabled", true);
-    // add spinner to button
-    $('#spinner').html(
-      `<div class="d-flex align-items-center">
-        <strong>Loading...</strong>
-        <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div>
-      </div>`
-    );
-  });
-});
