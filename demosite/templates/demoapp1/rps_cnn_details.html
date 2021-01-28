@@ -17,32 +17,35 @@
         a total of 2188 similarly oriented images. CNN is composed of the following layers:
       </p>
       <dl class="row">
-        <dt class="col-sm-3">Convolution</dt>
+        <dt class="col-sm-3">1<sup>st</sup> convolution</dt>
         <dd class="col-sm-9">128 filters with size 3x3, ReLU activation</dd>
-        <dt class="col-sm-3">Pooling</dt>
+        <dt class="col-sm-3">1<sup>st</sup> pooling</dt>
         <dd class="col-sm-9">size 2x2</dd>
-        <dt class="col-sm-3">Convolution</dt>
+        <dt class="col-sm-3">2<sup>nd</sup> convolution</dt>
         <dd class="col-sm-9">64 filters with size 3x3, ReLU activation</dd>
-        <dt class="col-sm-3">Pooling</dt>
+        <dt class="col-sm-3">2<sup>nd</sup> pooling</dt>
         <dd class="col-sm-9">size 2x2</dd>
-        <dt class="col-sm-3">Convolution</dt>
+        <dt class="col-sm-3">3<sup>rd</sup> convolution</dt>
         <dd class="col-sm-9">32 filters with size 3x3, ReLU activation</dd>
-        <dt class="col-sm-3">Pooling</dt>
+        <dt class="col-sm-3">3<sup>rd</sup> pooling</dt>
         <dd class="col-sm-9">size 2x2</dd>
         <dt class="col-sm-3">Flatten</dt>
         <dd class="col-sm-9">&nbsp;</dd>
-        <dt class="col-sm-3">Dense</dt>
+        <dt class="col-sm-3">Dense layer</dt>
         <dd class="col-sm-9">128 units, ReLU activation</dd>
         <dt class="col-sm-3">Dropout</dt>
         <dd class="col-sm-9">50%</dd>
-        <dt class="col-sm-3">Dense</dt>
+        <dt class="col-sm-3">Output layer</dt>
         <dd class="col-sm-9">3 units, categorical cross-entropy activation</dd>
       </dl>
       <p class='my_p'>
         Before feeding to the network images are being scaled to 90 x 60 pixels. Color information is beeing retained.
         Despite small training set, the network is having farely good results on examples from outside of the train/test batches:
       </p>
-      <img src="{% static 'demoapp1/images/rps/predictor_rotated.jpg' %}" class='img-fluid' alt="">
+      <figure class="figure">
+        <figcaption class="figure-caption">Example color images and their prediction probability for each category</figcaption>
+        <img src="{% static 'demoapp1/images/rps/predictor_rotated.jpg' %}" class='figure-img img-fluid rounded' alt="">
+      </figure>
       <p class='my_p'>
         Those are the best results so far.
       </p>
@@ -52,7 +55,10 @@
         It seams that the only valiuable information in that case is the contour of the hand. Below are the test results of a network trained
         on images with grayscale and edge recognition filters applied:
       </p>
-      <img src="{% static 'demoapp1/images/rps/predictor_rotate_edge_rec.jpg' %}" class='img-fluid' alt="">
+      <figure class="figure">
+        <figcaption class="figure-caption">Example grayscale images with edge recognition filter applied and their prediction probability for each category</figcaption>
+        <img src="{% static 'demoapp1/images/rps/predictor_rotate_edge_rec.jpg' %}" class='figure-img img-fluid rounded' alt="">
+      </figure>
       <p class='my_p'>
         The overall results are worse in that case. Despite the filters, the images are still retaining lot of useless noise
         and the edge recognition is still far from ideal. This method still requires more investigation.
@@ -74,8 +80,8 @@
         <a href="https://www.kaggle.com/drgfreeman/rockpaperscissors">dataset available on Kaggle</a>
         under license:
         <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>
-        <br>
       </p>
+      <br>
     </div>
 
   </div>
