@@ -62,7 +62,7 @@ def graphing_calculator(request):
                 plot_bgcolor='#d8f3dc')
         plot_div = plot(fig, output_type='div')
         return render(request, 'demoapp1/graphing_calculator.html', context={'plot_div': plot_div})
-    except (NameError, ZeroDivisionError, ValueError, TypeError, SyntaxError):
+    except (NameError, ZeroDivisionError, ValueError, TypeError, SyntaxError, AttributeError):
         return render(request,'demoapp1/graphing_calculator.html', context={'plot_div' : 'Error'})
     except:
         return render(request,'demoapp1/graphing_calculator.html')
