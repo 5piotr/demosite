@@ -66,7 +66,7 @@
         <form id="form" method="post" class="needs-validation" novalidate>
           {% csrf_token %}
           <div class="form-group">
-            <label>Please select apartment location inside the polish borders and its parameters:</label>
+            <label>Please select apartment location and its parameters:</label>
             <br><br>
             <div id='mapid'></div>
             <br>
@@ -147,7 +147,7 @@
                   {% endwith %}
                 </select>
               </div>
-              <label for="floors" class="col-lg-3 col-form-label">floors:</label>
+              <label for="floors" class="col-lg-3 col-form-label">total floors:</label>
               <div class="col-lg-3">
                 <select id='floors' class="custom-select" name="floors" required>
                   <option selected disabled value=""></option>

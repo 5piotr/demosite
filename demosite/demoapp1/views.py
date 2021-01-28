@@ -146,8 +146,8 @@ def apartment_price_estimator(request):
         dummy_frame = pkl.load(infile)
         infile.close()
 
-        dummy_frame.area = area
-        dummy_frame.build_yr = built
+        dummy_frame['area'] = area
+        dummy_frame['build_yr'] = built
         if market == 'wtorny':
             dummy_frame.market_wtorny = 1
         if rooms != '1':
@@ -204,7 +204,6 @@ def apartment_price_estimator(request):
                         'pred_rf_m':int(pred_rf_m)
                         })
     except (ValueError) as e:
-        print(e)
         return render(request,'demoapp1/apartment_price_estimator.html', context={'pred_ann':'Error',
                                                                                     'e':e})
 
