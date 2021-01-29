@@ -112,10 +112,8 @@ def apartment_price_estimator(request):
 
         if request.POST['market'] == 'primary':
             market = 'pierwotny'
-            market_ret = 'primary'
         elif request.POST['market'] == 'aftermarket':
             market = 'wtorny'
-            market_ret = 'aftermarket'
         built = float(request.POST['built'])
         area = float(request.POST['area'])
         if request.POST['rooms'] == '> 8':
@@ -134,7 +132,7 @@ def apartment_price_estimator(request):
             floors = 'powyżej 30'
         else:
             floors = request.POST['floors']
-        if int(floor) > int(floors):
+        if int(request.POST['floor']) > int(request.POST['floors']):
             raise ValueError('Selected floor should be in complience with the total number of floors')
 
         # cluster assignment
@@ -192,12 +190,12 @@ def apartment_price_estimator(request):
                         context={
                         'lat':round(lat,4),
                         'lng':round(lng,4),
-                        'market':market_ret,
+                        'market':request.POST['market'],
                         'built':int(built),
                         'area':int(area),
                         'rooms':rooms,
-                        'floor':floor,
-                        'floors':floors,
+                        'floor':request.POST['floor'],
+                        'floors':request.POST['floors'],
                         'pred_ann':pred_ann,
                         'pred_rf':pred_rf,
                         'pred_ann_m':int(pred_ann_m),
