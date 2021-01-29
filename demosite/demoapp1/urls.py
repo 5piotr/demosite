@@ -12,5 +12,6 @@ urlpatterns = [
     path('rps_cnn_details/', views.rps_cnn_details, name='rps_cnn_details'),
     path('apartment_price_estimator/', views.apartment_price_estimator, name='apartment_price_estimator'),
     path('apartment_estimator_details/', views.apartment_estimator_details, name='apartment_estimator_details'),
+    path('privacy_policy/', views.privacy_policy, name='privacy_policy'),
     path('under_construction/',views.under_construction, name='under_construction'),
 ]
