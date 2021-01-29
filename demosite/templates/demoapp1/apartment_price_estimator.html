@@ -151,9 +151,9 @@
               <div class="col-lg-3">
                 <select id='floors' class="custom-select" name="floors" required>
                   <option selected disabled value=""></option>
-                  {% with ''|center:31 as range %}
+                  {% with ''|center:30 as range %}
                   {% for _ in range %}
-                    <option>{{ forloop.counter|add:"-1" }}</option>
+                    <option>{{ forloop.counter }}</option>
                   {% endfor %}
                   {% endwith %}
                 </select>
