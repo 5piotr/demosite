@@ -1,7 +1,10 @@
 {% extends "demoapp1/base.html" %}
 
 {% block title %}
-<title>Graphing Calculator</title>
+{% load static %}
+<meta name="title" property="og:title" content="Graphing Calculator">
+<meta name="image" property="og:image" content="{% static 'demoapp1/images/graphing_calc.png' %}">
+<meta name="description" property="og:description" content="This is a simple graphing calculator.">
 {% endblock %}
 
 {% block body_block %}

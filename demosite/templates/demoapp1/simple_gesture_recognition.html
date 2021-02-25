@@ -1,7 +1,11 @@
 {% extends "demoapp1/base.html" %}
 
 {% block title %}
-<title>Simple Gesture Recognition</title>
+{% load static %}
+<meta name="title" property="og:title" content="Simple Gesture Recognition">
+<meta name="image" property="og:image" content="{% static 'demoapp1/images/rock-paper-scissors.png' %}">
+<meta name="description" property="og:description" content="This application is using convolutional neural network model
+to classify images of the Rock Paper Scissors game calls.">
 {% endblock %}
 
 {% block body_block %}
