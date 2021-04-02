@@ -10,55 +10,53 @@
 <div class="container">
   <div class="row">
     <div class="col-md-8" style='margin: 0 auto;'>
-      <div class="jumbotron my_jumbotron" style='padding: 1rem 1rem 1rem 1rem; margin: 0 auto;'>
-        <h1 class="display-4">Welcome!</h1>
-        <p class="lead">This webpage is powered by:</p>
+
+      <div class="card" style='margin: 1rem 0rem;'>
+        <div class="row no-gutters">
+          <div class="col-md-6 align-self-center">
+            <img src="{% static 'demoapp1/images/graphing_calc.png' %}" class="card-img" alt="***missing_image***" style='padding: 0.5rem;'>
+          </div>
+          <div class="col-md-6">
+            <div class="card-body">
+              <h5 class="card-title">Graphing Calculator</h5>
+              <p class="card-text">This is a simple graphing calculator.</p>
+              <a href="{% url 'demoapp1:graphing_calculator' %}" class="btn btn-info">Go to app</a>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="row align-items-center">
-        <div class="col-md-4 col-sm-6">
-          <a href="https://getbootstrap.com/docs/4.5/getting-started/introduction/">
-            <img src="{% static 'demoapp1/images/bootstrap.png' %}" class='img-fluid' alt="***missing_image***" style='padding: 1rem 1rem'>
-          </a>
+
+      <div class="card" style='margin: 1rem 0rem;'>
+        <div class="row no-gutters">
+          <div class="col-md-6 align-self-center">
+            <img src="{% static 'demoapp1/images/rock-paper-scissors.png' %}" class="card-img" alt="***missing_image***">
+          </div>
+          <div class="col-md-6">
+            <div class="card-body">
+              <h5 class="card-title">Simple Gesture Recognition</h5>
+              <p class="card-text">This application is using convolutional neural network model
+              to classify images of the Rock Paper Scissors game calls.</p>
+              <a href="{% url 'demoapp1:simple_gesture_recognition' %}" class="btn btn-info">Go to app</a>
+              <a href="{% url 'demoapp1:rps_cnn_details' %}" class="btn btn-info">App details</a>
+            </div>
+          </div>
         </div>
-        <div class="col-md-4 col-sm-6">
-          <a href="https://docs.djangoproject.com/en/3.1/">
-            <img src="{% static 'demoapp1/images/django.png' %}" class='img-fluid' alt="***missing_image***" style='padding: 1rem 1rem'>
-          </a>
-        </div>
-        <div class="col-md-4 col-sm-6">
-          <a href="https://www.tensorflow.org/api_docs/python/tf">
-            <img src="{% static 'demoapp1/images/tensorflow.png' %}" class='img-fluid' alt="***missing_image***" style='padding: 1rem 1rem'>
-          </a>
-        </div>
-        <div class="col-md-4 col-sm-6">
-          <a href="https://plotly.com/python/">
-            <img src="{% static 'demoapp1/images/plotly.png' %}" class='img-fluid' alt="***missing_image***" style='padding: 1rem 1rem'>
-          </a>
-        </div>
-        <div class="col-md-4 col-sm-6">
-          <a href="https://www.kaggle.com/datasets">
-            <img src="{% static 'demoapp1/images/kaggle.png' %}" class='img-fluid' alt="***missing_image***" style='padding: 1rem 1rem'>
-          </a>
-        </div>
-        <div class="col-md-4 col-sm-6">
-          <a href="https://scikit-learn.org/stable/index.html">
-            <img src="{% static 'demoapp1/images/scikit.png' %}" class='img-fluid' alt="***missing_image***" style='padding: 1rem 1rem'>
-          </a>
-        </div>
-        <div class="col-md-4 col-sm-6">
-          <a href="https://www.mapbox.com/">
-            <img src="{% static 'demoapp1/images/mapbox.png' %}" class='img-fluid' alt="***missing_image***" style='padding: 1rem 1rem'>
-          </a>
-        </div>
-        <div class="col-md-4 col-sm-6">
-          <a href="https://leafletjs.com/">
-            <img src="{% static 'demoapp1/images/leaflet.png' %}" class='img-fluid' alt="***missing_image***" style='padding: 1rem 1rem'>
-          </a>
-        </div>
-        <div class="col-md-4 col-sm-6">
-          <a href="https://leaflet-extras.github.io/leaflet-providers/preview/">
-            <img src="{% static 'demoapp1/images/openstreetmap.png' %}" class='img-fluid' alt="***missing_image***" style='padding: 1rem 1rem'>
-          </a>
+      </div>
+
+      <div class="card" style='margin: 1rem 0rem;'>
+        <div class="row no-gutters">
+          <div class="col-md-6 align-self-center">
+            <img src="{% static 'demoapp1/images/apartment.png' %}" class="card-img" alt="***missing_image***">
+          </div>
+          <div class="col-md-6">
+            <div class="card-body">
+              <h5 class="card-title">Apartment Price Estimator</h5>
+              <p class="card-text">This application is using neural network and random forest models
+              to estimate the price of a given apartment.</p>
+              <a href="{% url 'demoapp1:apartment_price_estimator' %}" class="btn btn-info">Go to app</a>
+              <a href="{% url 'demoapp1:apartment_estimator_details' %}" class="btn btn-info">App details</a>
+            </div>
+          </div>
         </div>
       </div>
 
