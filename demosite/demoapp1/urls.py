@@ -1,5 +1,6 @@
 from django.urls import path, include
 from demoapp1 import views
+from django.views.generic.base import TemplateView
 
 app_name = 'demoapp1'
 
@@ -14,4 +15,5 @@ urlpatterns = [
     path('apartment_estimator_details/', views.apartment_estimator_details, name='apartment_estimator_details'),
     path('privacy_policy/', views.privacy_policy, name='privacy_policy'),
     path('under_construction/',views.under_construction, name='under_construction'),
+    path("robots.txt/",TemplateView.as_view(template_name="demoapp1/robots.txt", content_type="text/plain"))
 ]

@@ -216,3 +216,4 @@ def privacy_policy(request):
 
 def under_construction(request):
     return render(request,'demoapp1/under_construction.html')
+    
