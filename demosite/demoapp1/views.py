@@ -136,11 +136,11 @@ def apartment_price_estimator(request):
             raise ValueError('Selected floor should be in complience with the total number of floors')
 
         # cluster assignment
-        kmeans = joblib.load(os.path.join(os.path.dirname(os.path.abspath(__file__)),'500_means_cls'))
+        kmeans = joblib.load(os.path.join(os.path.dirname(os.path.abspath(__file__)),'500_means_cls_2021q2'))
         cluster = kmeans.predict([[lat,lng]])[0]
 
         # preparint input for estimation
-        infile = open(os.path.join(os.path.dirname(os.path.abspath(__file__)),'dummy_apartment_frame'),'rb')
+        infile = open(os.path.join(os.path.dirname(os.path.abspath(__file__)),'dummy_apartment_frame_2021q2'),'rb')
         dummy_frame = pkl.load(infile)
         infile.close()
 
@@ -158,13 +158,13 @@ def apartment_price_estimator(request):
             dummy_frame['cluster_' + str(cluster)] = 1
 
         # ann estimation
-        model_ann = load_model(os.path.join(os.path.dirname(os.path.abspath(__file__)),'500a1_2021-01-27--18-09'))
-        scaler_ann = joblib.load(os.path.join(os.path.dirname(os.path.abspath(__file__)),'scaler_500a1'))
+        model_ann = load_model(os.path.join(os.path.dirname(os.path.abspath(__file__)),'2021q2_500_2021-07-13--17-29'))
+        scaler_ann = joblib.load(os.path.join(os.path.dirname(os.path.abspath(__file__)),'scaler_500_2021q2'))
         pred_ann = model_ann.predict(scaler_ann.transform(dummy_frame))[0][0]
         pred_ann = int(pred_ann)
 
         # random forest estimation
-        model_rf = joblib.load(os.path.join(os.path.dirname(os.path.abspath(__file__)),'random_forest_model_a1'))
+        model_rf = joblib.load(os.path.join(os.path.dirname(os.path.abspath(__file__)),'random_forest_model_2021q2'))
         pred_rf = model_rf.predict(dummy_frame)[0]
         pred_rf = int(pred_rf)
 
