@@ -27,7 +27,7 @@ to estimate the price of a given apartment.">
   <div class="row">
     <div class="col-md-6" style='margin: 3rem auto;'>
       <h4>Apartment price estimator</h4>
-      <small  class="form-text text-muted">Updated after Q2 2021</small>
+      <small  class="form-text text-muted">Updated after Q2 2022</small>
       <br>
       {% if pred_ann and pred_ann != 'Error' %}
         <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -108,7 +108,7 @@ to estimate the price of a given apartment.">
               <div class="col-lg-3">
                 <select id='built' class="custom-select" name="built" required>
                   <option selected disabled value=""></option>
-                  {% with ''|center:123 as range %}
+                  {% with ''|center:125 as range %}
                   {% for _ in range %}
                     <option>{{ forloop.counter|add:1899 }}</option>
                   {% endfor %}
@@ -135,7 +135,6 @@ to estimate the price of a given apartment.">
                     <option>{{ forloop.counter }}</option>
                   {% endfor %}
                   {% endwith %}
-                  <option>> 8</option>
                 </select>
               </div>
             </div>
@@ -157,9 +156,9 @@ to estimate the price of a given apartment.">
               <div class="col-lg-3">
                 <select id='floors' class="custom-select" name="floors" required>
                   <option selected disabled value=""></option>
-                  {% with ''|center:30 as range %}
+                  {% with ''|center:31 as range %}
                   {% for _ in range %}
-                    <option>{{ forloop.counter }}</option>
+                    <option>{{ forloop.counter|add:"-1" }}</option>
                   {% endfor %}
                   {% endwith %}
                 </select>

@@ -12,265 +12,296 @@
     <div class="col-md-8" style='margin: 0 auto;'>
       <h4 class="my_h4">The Estimator</h4>
       <p class="my_p">
-        This is an estimator designed to predict apartment prices on the polish real estate market.
+        This is an estimator designed to predict apartment prices on the Polish real estate market.
         It is outputting 2 prices. One comes from random forest model, the other from artificial neural network.
-        Below you can find information about its creation, methods used and evaluation.
+        Below you can find information about its creation and evaluation.
       </p>
       <h4 class="my_h4">Web scraping</h4>
       <p class="my_p">
-        Data required for training of the models have been acquired via web scraping from a polish auction portal.
+        Data required for training of the models have been acquired via web scraping from a Polish auction portal.
         Automatic data acquisition is not prohibited by portals terms of use. The procedure did not interfere
-        with it's the functioning. The result was a set of 90k data points with 21 parameters each.
+        with it's functioning. The result was a set of 100k unique observations with 14 parameters:
+        <li>city - city in which the apartment is located</li>
+        <li>district - city district</li>
+        <li>voivodeship - Polish administration region</li>
+        <li>localization_y - geographic location: latitude</li>
+        <li>localization_x - geographic location: longitude</li>
+        <li>market - primary market, aftermarket</li>
+        <li>offer_type - sell (safety check)</li>
+        <li>area - total area of the apartment</li>
+        <li>rooms - total number of rooms in the apartment</li>
+        <li>floor - floor on which the apartment is located</li>
+        <li>floors - total number of floors in the building</li>
+        <li>build_yr - year in which the apartment was built</li>
+        <li>price - price of the apartment in PLN</li>
+        <li>url - address of the website with the advertisement</li>
       </p>
       <h4 class="my_h4">Data preparation</h4>
       <p class="my_p">
-        Some parameters had to be discarded. They were defined only for a small amount of data points so
-        would turn useless during model training. Other data points ware missing a crucial information necessary for training
-        like price and location. Those whole data points also had to be removed.<br>
-        The data set was further reduced by filtering out the outliers. The arbitrary rules for this ware for example:
-        the apartment needs to have at least 15m<sup>2</sup> and price between 20k PLN and 20M PLN.
-        Those operations reduced the data set to 54k data points and 14 parameters.<br>
-        The location information in the data set is repetitive. It is defined by geographic coordinates and address information.
-        This will help during data analysis, but model will be trained only with transformed latitude and longitude parameters.
+        Some observations had to be discarded. They were missing significant information that are highly impacting the final price.
+        18% of data had no price to begin with. The remaining 30% had no built year and 11% ware missing the information about the floors.
+        Rest of the data ware fairly complete, only 1-3% values per variable ware missing. After the drop, 52k observations remained.<br>
+        The categorical data have been checked for consistency. Only information about the floors needed processing. In border cases
+        they were descriptive instead of numerical. <br>
+        Information about the price per m<sup>2</sup> have been added for further preprocessing and analysis. <br>
+        Data below 1<sup>st</sup> percentile and above 99<sup>th</sup> percentile for variables: "area", "price", "price_of_sqm"
+        have been considered as outliers. The same was for "build_yr" lower than 1900. Some outliers have also been found in latitude and longitude. Points that they were
+        describing were outside the Polish border despite clearly Polish administration information. In some rare cases, values of the
+        coordinates were numbers with no decimal places, which suggested some kind of algorithmic assignment not in line with the actual
+        location. After dropping the outliers, 49k observations remained. <br>
+        Skew and kurtosis values for the variables have been checked. No further processing ware needed.
+
       </p>
       <h4 class="my_h4">Data analysis</h4>
       <p class="my_p">
-        Here are statistical information describing the data set. Prices are in PLN.
+        Below you can see histograms describing the data set. Prices are in PLN.
       </p>
-      <figure class="figure">
-        <figcaption class="figure-caption">Apartment data set statistics</figcaption>
-        <img src="{% static 'demoapp1/images/apartment_est/data_statistics.png' %}" class='figure-img img-fluid rounded' alt="***missing_image***">
-      </figure>
       <img src="{% static 'demoapp1/images/apartment_est/price_dist.png' %}" class='figure-img img-fluid rounded' alt="***missing_image***">
       <img src="{% static 'demoapp1/images/apartment_est/price_m2_dist.png' %}" class='figure-img img-fluid rounded' alt="***missing_image***">
       <img src="{% static 'demoapp1/images/apartment_est/area_dist.png' %}" class='figure-img img-fluid rounded' alt="***missing_image***">
       <img src="{% static 'demoapp1/images/apartment_est/floor_dist.png' %}" class='figure-img img-fluid rounded' alt="***missing_image***">
       <img src="{% static 'demoapp1/images/apartment_est/floors_dist.png' %}" class='figure-img img-fluid rounded' alt="***missing_image***">
       <img src="{% static 'demoapp1/images/apartment_est/built_dist.png' %}" class='figure-img img-fluid rounded' alt="***missing_image***">
-      <img src="{% static 'demoapp1/images/apartment_est/built_dist_2000_2020.png' %}" class='figure-img img-fluid rounded' alt="***missing_image***">
       <p class="my_p">
-        Here is comparison of prices per m<sup>2</sup> across the voivodeships:
+        Here is the box plot of prices per m<sup>2</sup> across the voivodeships:
       </p>
       <img src="{% static 'demoapp1/images/apartment_est/price_v_box.png' %}" class='figure-img img-fluid rounded' alt="***missing_image***">
-      <img src="{% static 'demoapp1/images/apartment_est/price_v_box_z.png' %}" class='figure-img img-fluid rounded' alt="***missing_image***">
       <p class="my_p">
-        In some voivodeships the aftermarket apartments are more expensive than new ones. In their capital cities:
-        Warsaw, Krakow, Wroclaw, Gdansk the city centers don't have much space for new buildings so the aftermarket
-        is dominated by used apartments. There are a lot of outliers above the Q3+1.5IQR level. The prices are pushed to the extreme.
+        In some voivodeships, the aftermarket apartments are more expensive than new ones. In their capital cities:
+        Warsaw, Krakow, Wroclaw, Gdansk the city centers don't have much space for new buildings, so the aftermarket
+        is dominated by used apartments.
       </p>
       <p class="my_p">
         The next set of plots is showing the dependencies between price and area:
       </p>
-      <img src="{% static 'demoapp1/images/apartment_est/price_to_area.png' %}" class='figure-img img-fluid rounded' alt="***missing_image***">
       <img src="{% static 'demoapp1/images/apartment_est/avg_price_to_area.png' %}" class='figure-img img-fluid rounded' alt="***missing_image***">
       <img src="{% static 'demoapp1/images/apartment_est/avg_m_price_to_area.png' %}" class='figure-img img-fluid rounded' alt="***missing_image***">
       <p class="my_p">
-        The lowest price per m<sup>2</sup> is on apartments between 55 and 65m<sup>2</sup>.
+        The lowest price per m<sup>2</sup> is for  60m<sup>2</sup> apartments.
       </p>
       <p class="my_p">
-        Below you can see price information in relation to geolocation.
+        Below, you can see price information in relation to geolocation.
       </p>
       <figure class="figure">
-        <figcaption class="figure-caption">Apartments with prices below 1M PLN</figcaption>
         <img src="{% static 'demoapp1/images/apartment_est/map_price_below_m.png' %}" class='figure-img img-fluid rounded' alt="***missing_image***">
+        <figcaption class="figure-caption">Apartments with prices below 1M PLN.</figcaption>
       </figure>
+      <br>
+      <br>
       <figure class="figure">
-        <figcaption class="figure-caption">Apartments in Warsaw with prices below 1M PLN</figcaption>
-        <img src="{% static 'demoapp1/images/apartment_est/map_price_below_m_warsaw.png' %}" class='figure-img img-fluid rounded' alt="***missing_image***">
-      </figure>
-      <figure class="figure">
-        <figcaption class="figure-caption">Apartments with prices above 1M PLN (5000 out of 54k data points)</figcaption>
         <img src="{% static 'demoapp1/images/apartment_est/map_price_above_m.png' %}" class='figure-img img-fluid rounded' alt="***missing_image***">
+        <figcaption class="figure-caption">Apartments with prices above 1M PLN (5k out of 49k data points).</figcaption>
       </figure>
+      <br>
+      <br>
       <figure class="figure">
-        <figcaption class="figure-caption">Apartments with prices below 15k PLN per m<sup>2</sup></figcaption>
-        <img src="{% static 'demoapp1/images/apartment_est/map_pricem_below_15.png' %}" class='figure-img img-fluid rounded' alt="***missing_image***">
-      </figure>
-      <figure class="figure">
-        <figcaption class="figure-caption">Apartments in Warsaw with prices below 15k PLN per m<sup>2</sup></figcaption>
         <img src="{% static 'demoapp1/images/apartment_est/map_pricem_below_15_warsaw.png' %}" class='figure-img img-fluid rounded' alt="***missing_image***">
+        <figcaption class="figure-caption">Apartments in Warsaw with prices below 20k PLN per m<sup>2</sup>.</figcaption>
       </figure>
+      <br>
+      <br>
       <figure class="figure">
-        <figcaption class="figure-caption">Apartments in Krakow with prices below 15k PLN per m<sup>2</sup></figcaption>
-        <img src="{% static 'demoapp1/images/apartment_est/map_pricem_below_15_krakow.png' %}" class='figure-img img-fluid rounded' alt="***missing_image***">
-      </figure>
-      <figure class="figure">
-        <figcaption class="figure-caption">Apartments with prices above 15k PLN per m<sup>2</sup> (4000 out of 54k data points)</figcaption>
-        <img src="{% static 'demoapp1/images/apartment_est/map_pricem_above_15.png' %}" class='figure-img img-fluid rounded' alt="***missing_image***">
-      </figure>
-      <figure class="figure">
-        <figcaption class="figure-caption">Apartments in Warsaw with prices above 15k PLN per m<sup>2</sup></figcaption>
         <img src="{% static 'demoapp1/images/apartment_est/map_pricem_above_15_warsaw.png' %}" class='figure-img img-fluid rounded' alt="***missing_image***">
+        <figcaption class="figure-caption">Apartments in Warsaw with prices above 20k PLN per m<sup>2</sup>.</figcaption>
       </figure>
+
       <p class="my_p">
-        For the 90% of data points (price < 1M or price per m<sup>2</sup> < 15k) there is a clear geo-pattern.
+        For the 90% of data points (price < 1M or price per m<sup>2</sup> < 20k) there is a clear geo-pattern.
       </p>
       <h4 class="my_h4">K-means clustering</h4>
       <p class="my_p">
-        It is best to train the model on geolocation data organized into bins. Otherwise, the model will struggle to find patterns
-        in two-dimensional continuous plane with many local extremes. Final price is driven by the coordinate values, but it is not
-        proportional to them. There are two ways to achieve that. The first one is to use city/district values. They are naturally organizing
+        The best practice is to train the model on geolocation data organized into bins. Otherwise, the model will struggle to find patterns
+        in a two-dimensional continuous plane with many local extremes. Final price is driven by the coordinate values, but not in a proportional
+        manner. <br>
+        There are two ways to approach this issue. The first one is to use city/district values. They are naturally organizing
         the data into bins. However, it is getting problematic to assign new points to those bins. It requires address analysis and
-        validation. Also, it is very likely the model in not training on all possible locations. It will not be able to predict output for
+        validation. Also, it is very likely that the model is not training on all possible locations. It will not be able to predict output for
         locations that it hasn't seen before.<br>
-        The second way to organize the geolocation data is to use latitude and longitude values to create virtual bins. Covering the area
-        by grid with predefined resolution will make easy to group the existing data points and also to put any given point into already
-        existing bin.
+        The second way is to use latitude and longitude values to create virtual bins. Covering the area by grid with predefined resolution
+        will make it easy to group the existing data points and also to put any given point into an already existing bin.
       </p>
       <figure class="figure">
-        <figcaption class="figure-caption">Apartmen map covered by 25x25 grid</figcaption>
         <img src="{% static 'demoapp1/images/apartment_est/grid_bins.png' %}" class='figure-img img-fluid rounded' alt="***missing_image***">
+        <figcaption class="figure-caption">Apartmen map covered by 25x25 grid.</figcaption>
       </figure>
       <p class="my_p">
         This method is simple but unfortunately not efficient. It is visible after zooming the map.
       </p>
       <figure class="figure">
-        <figcaption class="figure-caption">Apartmen map of Warsaw covered by grid</figcaption>
         <img src="{% static 'demoapp1/images/apartment_est/grid_bins_warsaw.png' %}" class='figure-img img-fluid rounded' alt="***missing_image***">
+        <figcaption class="figure-caption">Apartmen map of Warsaw covered by grid.</figcaption>
       </figure>
       <p class="my_p">
-        Even the 625 bins grid is not enough to reflect the complexity of apartment price structure on the city level.
-        There are also bins that are completely empty, with no points to train the model. To correctly group the data at least
+        625 bins grid is not enough to reflect the complexity of apartment price structure on the city level.
+        There are also bins that are completely empty, with no points to train the model. To correctly group the data, at least
         x10 higher resolution is required.
       </p>
       <figure class="figure">
-        <figcaption class="figure-caption">Apartmen map of Warsaw covered by x10 denser grid than the previous map</figcaption>
         <img src="{% static 'demoapp1/images/apartment_est/grid_bins_warsaw2.png' %}" class='figure-img img-fluid rounded' alt="***missing_image***">
+        <figcaption class="figure-caption">Apartment map of Warsaw covered by x10 denser grid than the previous map.</figcaption>
       </figure>
       <p class="my_p">
-        x10 denser grid means that there are now 62.5k bins with only small amount of them covered by data points. This is clearly not
+        x10 denser grid means that there are now 62.5k bins with only a small amount of them covered by data points. This is clearly not
         a correct approach.
       </p>
       <p class="my_p">
         There is a better way, the k-means clustering algorithm. It is grouping the locations into a predefined number of bins-clusters.
-        The cluster size is correlated to point occurrence density. More dense regions have smaller clusters and less dense bigger ones.
+        The cluster size is correlated to point density. More dense regions have smaller clusters and less dense bigger ones.
         Clustering performed for this project has been done only on latitude and longitude values, so it is purely geometric.
-        Despite the simplicity it is doing a good job. Here is the clustering visualization for the whole country. 500 clusters have been used.
+        Despite the simplicity, it is doing a great job. Here is the clustering visualization for the whole country.
       </p>
       <figure class="figure">
-        <figcaption class="figure-caption">Country map covered by 500 clusters</figcaption>
         <img src="{% static 'demoapp1/images/apartment_est/clustering_country.png' %}" class='figure-img img-fluid rounded' alt="***missing_image***">
+        <figcaption class="figure-caption">Country map covered by 600 clusters.</figcaption>
       </figure>
       <p class="my_p">
-        There are no empty clusters. Each one has different size and shape. In the areas between cities where there aren't many apatrments
-        on sale the clusters are big. They are getting smaller the closer to cities they are and even finer in the city centers.
+        There are no empty clusters. Each one has different size and shape. In the areas between cities where there aren't many apartments
+        on sale, the clusters are big. They are getting smaller the closer to cities they are, and even finer in the city centers.
         This behavior is beneficial to price estimator because the apartment prices are changing quickly on small distances in the cities and
-        are stable on bigger areas between them. The city clusters are more or less reflecting the district structure or at least they are
+        are stable on bigger areas between them. The city clusters are more or less reflecting the district structure, or at least they are
         in the same size range.
       </p>
       <figure class="figure">
-        <figcaption class="figure-caption">Warsaw map covered by clusters</figcaption>
         <img src="{% static 'demoapp1/images/apartment_est/clustering_warsaw.png' %}" class='figure-img img-fluid rounded' alt="***missing_image***">
+        <figcaption class="figure-caption">Warsaw map covered by clusters.</figcaption>
       </figure>
       <p class="my_p">
         The cluster amount selection is purely arbitrary and was determined by experiment. Different values have been tested
-        and 500 seems to be a correct balance between accuracy and efficiency. Below you can see how the prices (represented by dot size)
+        and 600 seems to be a good balance between accuracy and efficiency. Below you can see how the prices per m<sup>2</sup> (represented by dot size)
         are correlating with the clusters (represented by dot color).
       </p>
       <figure class="figure">
-        <figcaption class="figure-caption">Warsaw apartment map. Clusters are represented by colors and prices by dot sizes.</figcaption>
         <img src="{% static 'demoapp1/images/apartment_est/clustering_warsaw2.png' %}" class='figure-img img-fluid rounded' alt="***missing_image***">
+        <figcaption class="figure-caption">Warsaw apartment map. Clusters are represented by colors and prices per m<sup>2</sup> by dot sizes.</figcaption>
       </figure>
       <p class="my_p">
-        Cluster parameter has been added to the data set a redundant location information (address and geolocation) removed.
+        Cluster parameter has been added to the data set and redundant location information (address and geolocation) removed.
         All parameters besides area and build year were treated as categories and required creation of dummy variables.
-        After all transformations the final set has 54k data points and 575 features.
+        After all transformations, the final set has 49k data points and 670 features.
       </p>
       <h4 class="my_h4">Random forest regression</h4>
       <p class="my_p">
-        The number of estimators for random forest regressor have been selected by grid search algorithm. Different amount have been
-        tested, from 10 to 1000. With increasing number of estimators the model performance improvement was small so finally selected amount
-        is 30. The small number of estimators is improving model size and estimation time and better prevents overfitting.<br>
-        The R<sup>2</sup> score for this model is 0.83 as established by 10-fold cross validation. Below you can see a comparison
-        between the test data and the predictions and error distribution.
+        The number of estimators for random forest regressor have been selected by grid search algorithm. Tested values are between
+        10 and 100. With increasing number of estimators the model performance improvement was small so finally selected amount
+        was 30. The small number of estimators is improving model size and estimation time.<br>
+        The R<sup>2</sup> score for this model is 0.82 as established by 5-fold cross validation. Below you can see a comparison
+        between the test data and the predictions and also error distribution.
       </p>
       <div class="container row justify-content-center">
         <figure class="figure">
-          <figcaption class="figure-caption">
-            Comparison between the test data and the random forest predictions<br>
-            (red line is representing ideal model)
-          </figcaption>
           <img src="{% static 'demoapp1/images/apartment_est/rf_comparison.png' %}" class='figure-img img-fluid rounded' alt="***missing_image***">
         </figure>
+        <figcaption class="figure-caption">
+          Comparison between the test data and the random forest predictions<br>
+          (red line is representing the ideal model).
+        </figcaption>
       </div>
+      <br>
       <br>
       <div class="container row justify-content-center">
         <figure class="figure">
-          <figcaption class="figure-caption">Random forest error distribution for test predictions</figcaption>
           <img src="{% static 'demoapp1/images/apartment_est/rf_error.png' %}" class='figure-img img-fluid rounded' alt="***missing_image***">
+          <figcaption class="figure-caption">
+            Random forest error distribution for test predictions. <br>
+            Error is defined as the difference between true values <br>
+            and predictions.
+          </figcaption>
         </figure>
       </div>
       <h4 class="my_h4">Artificial neural network estimator</h4>
       <p class="my_p">
-        Data set has been scaled before feeding to the ANN. The model is composed of the following layers:
+        The data set has been scaled before feeding into the ANN. The model is composed of the following layers:
       </p>
       <dl class="row">
         <dt class="col-sm-3">1<sup>st</sup> hidden layer</dt>
-        <dd class="col-sm-9">16 neurons, ReLU activation</dd>
+        <dd class="col-sm-9">32 neurons, LeakyReLU activation, &alpha;=0.01</dd>
         <dt class="col-sm-3">2<sup>nd</sup> hidden layer</dt>
-        <dd class="col-sm-9">16 neurons, ReLU activation</dd>
+        <dd class="col-sm-9">16 neurons, LeakyReLU activation, &alpha;=0.01</dd>
         <dt class="col-sm-3">3<sup>rd</sup> hidden layer</dt>
-        <dd class="col-sm-9">8 neurons, ReLU activation</dd>
+        <dd class="col-sm-9">8 neurons, LeakyReLU activation, &alpha;=0.01</dd>
         <dt class="col-sm-3">4<sup>th</sup> hidden layer</dt>
-        <dd class="col-sm-9">8 neurons, ReLU activation</dd>
+        <dd class="col-sm-9">4 neurons, LeakyReLU activation, &alpha;=0.01</dd>
         <dt class="col-sm-3">Output layer</dt>
-        <dd class="col-sm-9">1 neuron, ReLU activation</dd>
+        <dd class="col-sm-9">1 neuron</dd>
       </dl>
       <p class='my_p'>
-        Training has been performed with early stopping and batch size of 256. It took 209 epochs. The R<sup>2</sup> score for this model is 0.82.
+        Training has been performed over 1000 epochs and batch size of 256. The R<sup>2</sup> score for this model is 0.84.
         Below you can see the loss plot, a comparison between the test data and the predictions and error distribution.
       </p>
       <div class="container row justify-content-center">
         <figure class="figure">
-          <figcaption class="figure-caption">Loss and validation loss during training of the model</figcaption>
           <img src="{% static 'demoapp1/images/apartment_est/ann_loss.png' %}" class='figure-img img-fluid rounded' alt="***missing_image***">
+          <figcaption class="figure-caption">Loss and validation loss during training of the model.</figcaption>
         </figure>
       </div>
       <br>
       <div class="container row justify-content-center">
         <figure class="figure">
+          <img src="{% static 'demoapp1/images/apartment_est/ann_comparison.png' %}" class='figure-img img-fluid rounded' alt="***missing_image***">
           <figcaption class="figure-caption">
             Comparison between the test data and the ANN predictions<br>
-            (red line is representing ideal model)
+            (red line is representing ideal model).
           </figcaption>
-          <img src="{% static 'demoapp1/images/apartment_est/ann_comparison.png' %}" class='figure-img img-fluid rounded' alt="***missing_image***">
         </figure>
       </div>
+      <p class='my_p'>
+        The data points are a bit more centered in comparison to the results of the random forest model.
+      </p>
+      <br>
       <div class="container row justify-content-center">
         <figure class="figure">
-          <figcaption class="figure-caption">ANN error distribution for test predictions</figcaption>
           <img src="{% static 'demoapp1/images/apartment_est/ann_error.png' %}" class='figure-img img-fluid rounded' alt="***missing_image***">
+          <figcaption class="figure-caption">ANN error distribution for test predictions.</figcaption>
         </figure>
       </div>
       <h4 class="my_h4">Models comparison and evaluation</h4>
       <p class="my_p">
-        In order to compare the models a special data frame has been prepared. Its data points are covering the whole country and
+        In order to compare the models, a special data frame has been prepared. Its data points are covering the whole country and
         besides the location, every other parameter is the same. They are describing the same, most common type of apartment.
-        This frame was fed through both models and absolute differences between each estimation have been saved and transformed
+        This frame was fed through both models, and absolute differences between each estimation have been saved and transformed
         into a heat map.
       </p>
       <figure class="figure">
-        <figcaption class="figure-caption">Estimation absolute difference heat map</figcaption>
         <img src="{% static 'demoapp1/images/apartment_est/heat_map.png' %}" class='figure-img img-fluid rounded' alt="***missing_image***">
+        <figcaption class="figure-caption">Estimation absolute difference heat map.</figcaption>
       </figure>
       <p class="my_p">
         It is safe to say that this absolute difference is a good indicator of estimation reliability. When it is close to zero,
-        this means that both models managed to find the same regularities/dependencies and present good estimations. The probability
-        that those regularities/dependencies are correct is high. On the other hand when the difference is big, the models are
-        struggling and it is more sure that they are further from the truth.<br>
+        this means that both models managed to find the same regularities/dependencies and make good estimations. The probability
+        that those regularities/dependencies are correct is high. On the other hand, when the difference is big, the models are
+        struggling, and it is more sure that they are further from the truth.<br>
         Some clusters are showing big differences between both estimations. The reason for that is visible after updating the map
         with the points on which the models ware trained.
       </p>
       <figure class="figure">
-        <figcaption class="figure-caption">Estimation absolute difference heat map with data points used for training</figcaption>
         <img src="{% static 'demoapp1/images/apartment_est/heat_map2.png' %}" class='figure-img img-fluid rounded' alt="***missing_image***">
+        <figcaption class="figure-caption">Estimation absolute difference heat map with data points used for training.</figcaption>
       </figure>
       <p class="my_p">
-        Better results are visible on the clusters with the most points, in the cities and in suburban areas where the apartment
+        Better results are visible for clusters with the most points, in the cities and in suburban areas where the apartment
         trade is taking place. In those clusters the models had a lot of points to train on. Model accuracy
-        is proportional to the amount of data used during training.<br>
-        The models are showing high accuracy in the regions that this estimator will be most likely to be used.
+        is proportional to the amount of data used during training. <br>
+        The models are showing high accuracy in the regions that this estimator will most likely be used.
       </p>
+      <p class="my_p">
+        Below you can see example maps that are showing performance of the models on the test set.
+      </p>
+      <figure class="figure">
+        <img src="{% static 'demoapp1/images/apartment_est/ann_error_map.png' %}" class='figure-img img-fluid rounded' alt="***missing_image***">
+        <figcaption class="figure-caption">ANN estimation error on test set.</figcaption>
+      </figure>
+      <br>
+      <br>
+      <figure class="figure">
+        <img src="{% static 'demoapp1/images/apartment_est/rf_error_map.png' %}" class='figure-img img-fluid rounded' alt="***missing_image***">
+        <figcaption class="figure-caption">Random forest estimation error on test set.</figcaption>
+      </figure>
+      <br>
+      <br>
+      <figure class="figure">
+        <img src="{% static 'demoapp1/images/apartment_est/ann_rf_diff.png' %}" class='figure-img img-fluid rounded' alt="***missing_image***">
+        <figcaption class="figure-caption">ANN and random forest estimation difference on test set.</figcaption>
+      </figure>
 
     </div>
 
