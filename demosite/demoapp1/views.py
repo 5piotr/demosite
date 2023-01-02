@@ -6,7 +6,7 @@ import plotly.express as px
 import math
 import numpy
 import PIL
-from PIL import Image, ImageOps
+from PIL import Image, ImageOps, ImageFilter
 import numpy as np
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing import image
@@ -69,32 +69,62 @@ class AboutView(TemplateView):
 
 def simple_gesture_recognition(request):
     try:
-        # if len(request.FILES['picture']) >= 4194304:
-        #     raise ValueError('file too big')
-        # if Image.open(request.FILES['picture']).format not in ['JPEG','PNG']:
-        #     raise ValueError('incorrect file type')
-
-        wit = 250
-        hei = int(wit*3/4)
-
-        picture = Image.open(request.FILES['picture'])
-        picture = picture.resize((wit,hei))
-        fig = px.imshow(picture)
-        fig.update_layout(coloraxis_showscale=False)
-        fig.update_layout(width=wit, height=hei, margin=dict(l=0, r=0, b=0, t=0))
-        fig.update_xaxes(showticklabels=False).update_yaxes(showticklabels=False)
-
-        model = load_model(os.path.join(os.path.dirname(os.path.abspath(__file__)),'2020-11-13--17-15_best'))
+        img_size = (92,70)
         pred_dict = {0:'paper', 1:'rock', 2:'scissors'}
-        my_image = picture.resize((90,60))
-        my_image = image.img_to_array(my_image)
-        my_image_p = np.expand_dims(my_image, axis=0)
-        label_no = np.argmax(model.predict(my_image_p))
+        model = load_model(os.path.join(os.path.dirname(os.path.abspath(__file__)),'2022-12-20--18-42_best'))
+        # load
+        img = Image.open(request.FILES['picture'])
+        # resize
+        img_resized = img.resize(img_size)
+        # cast to array
+        img_array = np.array(img_resized)
+        # flatten for clustering
+        img_flat = img_array.reshape(-1,3)
+        # clustering
+        kmeans = KMeans(n_clusters=2, random_state=0).fit(img_flat)
+        # generate clustered image
+        for j in np.unique(kmeans.labels_):
+            img_flat[kmeans.labels_==j,:] = kmeans.cluster_centers_[j]
+        img_k = img_flat.reshape(img_array.shape)
+        img_k = Image.fromarray(img_k)
+        # convert to gray scale and fing edges
+        img_e = img_k.convert('L')
+        img_e = img_e.filter(ImageFilter.FIND_EDGES)
+        # crop image to remove edges
+        img_e = img_e.crop((1,1,img_size[0]-1,img_size[1]-1))
+        # predict
+        img_e_p = np.array(img_e)
+        img_e_p = img_e_p.reshape(1, img_size[1]-2, img_size[0]-2, 1)
+        img_e_p = img_e_p/255
+        pred = model.predict(img_e_p)
+        label_no = np.argmax(pred)
         label = pred_dict[label_no]
 
-        plot_div = plot(fig, output_type='div')
-        return render(request,'demoapp1/simple_gesture_recognition.html', context={'plot_div': plot_div,
+        # generating plots
+        fig_r = px.imshow(img_resized)
+        fig_r.update_layout(coloraxis_showscale=False, margin=dict(l=0,r=0,b=5,t=5), height=300,
+                            paper_bgcolor='#d4eada', hovermode=False, dragmode=False)
+        fig_r.update_xaxes(showticklabels=False).update_yaxes(showticklabels=False)
+
+        fig_k = px.imshow(img_k)
+        fig_k.update_layout(coloraxis_showscale=False, margin=dict(l=0,r=0,b=5,t=5), height=300,
+                            paper_bgcolor='#d4eada', hovermode=False, dragmode=False)
+        fig_k.update_xaxes(showticklabels=False).update_yaxes(showticklabels=False)
+
+        fig_e = px.imshow(img_e)
+        fig_e.update_layout(coloraxis_showscale=False, margin=dict(l=0,r=0,b=5,t=5), height=300,
+                            paper_bgcolor='#d4eada', hovermode=False, dragmode=False)
+        fig_e.update_xaxes(showticklabels=False).update_yaxes(showticklabels=False)
+
+        plot_div_r = plot(fig_r, output_type='div')
+        plot_div_k = plot(fig_k, output_type='div')
+        plot_div_e = plot(fig_e, output_type='div')
+        
+        return render(request,'demoapp1/simple_gesture_recognition.html', context={'plot_div_r':plot_div_r,
+                                                                                    'plot_div_k':plot_div_k,
+                                                                                    'plot_div_e':plot_div_e,
                                                                                     'label':label})
+
     except (ValueError, PIL.UnidentifiedImageError):
         return render(request,'demoapp1/simple_gesture_recognition.html', context={'plot_div' : 'Error'})
     except:

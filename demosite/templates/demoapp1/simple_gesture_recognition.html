@@ -46,21 +46,27 @@ to classify images of the Rock Paper Scissors game calls.">
 
       <br>
 
-      {% if plot_div and plot_div != 'Error' %}
-          <div class="alert alert-success alert-dismissible fade show" role="alert">
-            The picture you uploaded is showing a
-            <strong>{{ label }}</strong> gesture<br><br>
+      {% if plot_div_r and plot_div_r != 'Error' %}
+          <div class="alert alert-success alert-dismissible fade show" role="alert" style='padding: 1rem;'>
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
-            <div class="container">
+            <br>
+            <div class="container text-center">
               {% autoescape off %}
-              {{ plot_div }}
+              {{ plot_div_r }}
+              {{ plot_div_k }}
+              {{ plot_div_e }}
               {% endautoescape %}
+              <br>
+              The picture you uploaded is showing a
+              <strong>{{ label }}</strong> gesture<br><br>
             </div>
-            <a href="{% url 'demoapp1:rps_cnn_details' %}" class="btn btn-info btn-sm" role="button" style='margin: 1rem 0;'>
-              Click here for more details about the CNN model
-            </a>
+            <div class="text-center">
+              <a href="{% url 'demoapp1:rps_cnn_details' %}" class="btn btn-info btn-sm" role="button" style='margin: 1rem 0;'>
+                Click here for more details about the CNN model
+              </a>
+            </div>
           </div>
 
       {% elif plot_div == 'Error' %}

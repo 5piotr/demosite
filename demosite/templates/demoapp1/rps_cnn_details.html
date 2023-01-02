@@ -10,11 +10,33 @@
 <div class="container">
   <div class="row">
     <div class="col-md-8" style='margin: 0 auto;'>
-      <h4 class="my_h4">The Network</h4>
+      <h4 class="my_h4">The Classifier</h4>
       <p class="my_p">
         This is a convolutional neural network trained to classify images of the Rock Paper Scissors game calls.
-        Neural network performing this classification has been trained on a farely small image data set containing
-        a total of 2188 similarly oriented images. CNN is composed of the following layers:
+        It has been trained on a fairly small image data set containing 2188 RGB images.
+        Below you can find information about its creation and evaluation.
+      </p>
+      <h4 class="my_h4">Image preparation</h4>
+      <p class="my_p">
+        To maximize the performance of the network, the train/test images were preprocessed to retain only useful information.
+        This was a three-step process:
+        <ul>
+          <li>resizing to 90x60 pixels - this will reduce the training time, which is exponentially dependent on the image size</li>
+          <li>clustering - each pixel of each image has been assigned to one of two clusters based on its placement in the RGB space;
+          color information for each pixel has been replaced by its respected cluster centroid color information</li>
+          <li>edge recognition - application of edge recognition filter</li>
+        </ul>
+        Here are some example transformations:
+      </p>
+      <img src="{% static 'demoapp1/images/rps/image_transformation_1.png' %}" class='figure-img img-fluid rounded' alt="***missing_image***">
+      <img src="{% static 'demoapp1/images/rps/image_transformation_2.png' %}" class='figure-img img-fluid rounded' alt="***missing_image***">
+      <img src="{% static 'demoapp1/images/rps/image_transformation_3.png' %}" class='figure-img img-fluid rounded' alt="***missing_image***">
+      <p class="my_p">
+        The resulting images are showing only the outline of the gesture which is really what it takes to classify them.
+      </p>
+      <h4 class="my_h4">Convolutional neural network classifier</h4>
+      <p class="my_p">
+        The model is composed of the following layers:
       </p>
       <dl class="row">
         <dt class="col-sm-3">1<sup>st</sup> convolution</dt>
@@ -26,8 +48,12 @@
         <dt class="col-sm-3">2<sup>nd</sup> pooling</dt>
         <dd class="col-sm-9">size 2x2</dd>
         <dt class="col-sm-3">3<sup>rd</sup> convolution</dt>
-        <dd class="col-sm-9">32 filters with size 3x3, ReLU activation</dd>
+        <dd class="col-sm-9">64 filters with size 3x3, ReLU activation</dd>
         <dt class="col-sm-3">3<sup>rd</sup> pooling</dt>
+        <dd class="col-sm-9">size 2x2</dd>
+        <dt class="col-sm-3">4<sup>th</sup> convolution</dt>
+        <dd class="col-sm-9">32 filters with size 3x3, ReLU activation</dd>
+        <dt class="col-sm-3">4<sup>th</sup> pooling</dt>
         <dd class="col-sm-9">size 2x2</dd>
         <dt class="col-sm-3">Flatten</dt>
         <dd class="col-sm-9">&nbsp;</dd>
@@ -36,42 +62,31 @@
         <dt class="col-sm-3">Dropout</dt>
         <dd class="col-sm-9">50%</dd>
         <dt class="col-sm-3">Output layer</dt>
-        <dd class="col-sm-9">3 units, categorical cross-entropy activation</dd>
+        <dd class="col-sm-9">3 units, softmax activation</dd>
       </dl>
       <p class='my_p'>
-        Before feeding to the network images are being scaled to 90 x 60 pixels. Color information is beeing retained.
-        Despite small training set, the network is having farely good results on examples from outside of the train/test batches:
+        In order to reduce overfitting, an image generator has been used. It applied small random transformations to train images:
+        rotation, shift, shear and zoom. With early stopping applied, it took 15 epochs to train the model.
+      </p>
+      <h4 class="my_h4">Model evaluation</h4>
+      <p class='my_p'>
+        Here are the classification results for images from outside of the train/test set:
       </p>
       <figure class="figure">
-        <figcaption class="figure-caption">Example color images and their prediction probability for each category</figcaption>
-        <img src="{% static 'demoapp1/images/rps/predictor_rotated.jpg' %}" class='figure-img img-fluid rounded' alt="***missing_image***">
+        <img src="{% static 'demoapp1/images/rps/predicting_clustered_edges_images.jpg' %}" class='figure-img img-fluid rounded' alt="***missing_image***">
       </figure>
       <p class='my_p'>
-        Those are the best results so far.
+        In some cases, the model is struggling to make a correct classification. This is caused by image preprocessing issues.
+        When the input picture has a not uniform background or the background has the same color tone as the hand, the edges of the gesture
+        are not correctly recognized.
       </p>
-      <h4 class="my_h4">Alternative approach... that filed</h4>
+      <h4 class="my_h4">How to improve user experience of the app</h4>
       <p class='my_p'>
-        Natural assumption is that images preprocessed in a smart way, containing only valuable imformaion are better input for training the network.
-        It seams that the only valiuable information in that case is the contour of the hand. Below are the test results of a network trained
-        on images with grayscale and edge recognition filters applied:
-      </p>
-      <figure class="figure">
-        <figcaption class="figure-caption">Example grayscale images with edge recognition filter applied and their prediction probability for each category</figcaption>
-        <img src="{% static 'demoapp1/images/rps/predictor_rotate_edge_rec.jpg' %}" class='figure-img img-fluid rounded' alt="***missing_image***">
-      </figure>
-      <p class='my_p'>
-        The overall results are worse in that case. Despite the filters, the images are still retaining lot of useless noise
-        and the edge recognition is still far from ideal. This method still requires more investigation.
-      </p>
-      <h4 class="my_h4">For best classification results</h4>
-      <p class='my_p'>
-        All images in the train and test sets have been reoriented to in the following maner. The hand is reaching from the bottom left cornerer
-        to the middle of the frame. In ideal scenario the user of this app will use his right hand to take a picture of his left hand.
-        The resulting picture should be well oriented for the classification. Results are also improved when:<br>
+        To improve classification results, the following advices should be taken into account:
         <ul>
-          <li>background is dark or highly contrasting, uniform and non reflective</li>
-          <li>lighting conditions are uniform/diffussed which is hiding the hand texture</li>
-          <li>shadows are not visible</li>
+          <li>use your right hand to take a landscape picture of your left hand; this ensures correct hand orientation</li>
+          <li>take the picture on a uniform, contrasting background (preferably black or white)</li>
+          <li>try to avoid capturing shadows</li>
         </ul>
       </p>
       <h4 class="my_h4">Data set for training</h4>
