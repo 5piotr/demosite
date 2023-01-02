@@ -24,49 +24,6 @@ class IndexView(TemplateView):
 class AboutView(TemplateView):
     template_name = 'demoapp1/about.html'
 
-# def calculator(request):
-#     try:
-#         hue = request.POST['query']
-#         ret = eval(hue)
-#         dict = {
-#             'hue' : hue,
-#             'ret' : ret,
-#         }
-#         return render(request,'demoapp1/calculator.html', context=dict)
-#     except (NameError, ZeroDivisionError, ValueError, TypeError):
-#         return render(request,'demoapp1/calculator.html', context={'ret' : 'Error'})
-#     except:
-#         return render(request,'demoapp1/calculator.html')
-#
-# def graphing_calculator(request):
-#     try:
-#         eq = request.POST['equation']
-#         x_min = float(request.POST['x_min'])
-#         x_max = float(request.POST['x_max'])
-#         # step = float(request.GET['step'])
-#         # x_data = numpy.arange(x_min,x_max,step)
-#         x_data = numpy.linspace(x_min,x_max,200,True)
-#         y_data = [eval(eq) for x in x_data]
-#         fig = go.Figure()
-#         fig.add_trace(go.Scatter(x=x_data,y=y_data,mode='lines'))
-#         fig.update_layout(margin=dict(l=10, r=10, b=10, t=10))
-#         fig.update_layout(
-#                 title={'text': 'f(x) = ' + eq,
-#                         'y':0.9,
-#                         'x':0.5,
-#                         'xanchor': 'center',
-#                         'yanchor': 'top'},
-#                 xaxis_title="x",
-#                 yaxis_title="f(x)",
-#                 paper_bgcolor="#caf0f8",
-#                 plot_bgcolor='#d8f3dc')
-#         plot_div = plot(fig, output_type='div')
-#         return render(request, 'demoapp1/graphing_calculator.html', context={'plot_div': plot_div})
-#     except (NameError, ZeroDivisionError, ValueError, TypeError, SyntaxError, AttributeError):
-#         return render(request,'demoapp1/graphing_calculator.html', context={'plot_div' : 'Error'})
-#     except:
-#         return render(request,'demoapp1/graphing_calculator.html')
-
 def simple_gesture_recognition(request):
     try:
         img_size = (92,70)
@@ -101,28 +58,20 @@ def simple_gesture_recognition(request):
         label = pred_dict[label_no]
 
         # generating plots
-        fig_r = px.imshow(img_resized)
-        fig_r.update_layout(coloraxis_showscale=False, margin=dict(l=0,r=0,b=5,t=5), height=300,
-                            paper_bgcolor='#d4eada', hovermode=False, dragmode=False)
-        fig_r.update_xaxes(showticklabels=False).update_yaxes(showticklabels=False)
+        images = [img_resized,img_k,img_e]
+        plots = []
 
-        fig_k = px.imshow(img_k)
-        fig_k.update_layout(coloraxis_showscale=False, margin=dict(l=0,r=0,b=5,t=5), height=300,
-                            paper_bgcolor='#d4eada', hovermode=False, dragmode=False)
-        fig_k.update_xaxes(showticklabels=False).update_yaxes(showticklabels=False)
+        for image in images:
+            fig = px.imshow(image)
+            fig.update_layout(coloraxis_showscale=False, margin=dict(l=0,r=0,b=5,t=5), height=300,
+                                paper_bgcolor='#d4eada', hovermode=False, dragmode=False)
+            fig.update_xaxes(showticklabels=False).update_yaxes(showticklabels=False)
+            fig_div = plot(fig, output_type='div')
+            plots.append(fig_div)
 
-        fig_e = px.imshow(img_e)
-        fig_e.update_layout(coloraxis_showscale=False, margin=dict(l=0,r=0,b=5,t=5), height=300,
-                            paper_bgcolor='#d4eada', hovermode=False, dragmode=False)
-        fig_e.update_xaxes(showticklabels=False).update_yaxes(showticklabels=False)
-
-        plot_div_r = plot(fig_r, output_type='div')
-        plot_div_k = plot(fig_k, output_type='div')
-        plot_div_e = plot(fig_e, output_type='div')
-        
-        return render(request,'demoapp1/simple_gesture_recognition.html', context={'plot_div_r':plot_div_r,
-                                                                                    'plot_div_k':plot_div_k,
-                                                                                    'plot_div_e':plot_div_e,
+        return render(request,'demoapp1/simple_gesture_recognition.html', context={'plot_div_r':plots[0],
+                                                                                    'plot_div_k':plots[1],
+                                                                                    'plot_div_e':plots[2],
                                                                                     'label':label})
 
     except (ValueError, PIL.UnidentifiedImageError):
