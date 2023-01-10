@@ -27,7 +27,7 @@ to estimate the price of a given apartment.">
   <div class="row">
     <div class="col-md-6" style='margin: 3rem auto;'>
       <h4>Apartment price estimator</h4>
-      <small  class="form-text text-muted">Updated after Q2 2022</small>
+      <small  class="form-text text-muted">Updated after Q4 2022</small>
       <br>
       {% if pred_ann and pred_ann != 'Error' %}
         <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -56,7 +56,7 @@ to estimate the price of a given apartment.">
             <span aria-hidden="true">&times;</span>
           </button>
           <a href="{% url 'demoapp1:apartment_estimator_details' %}" class="btn btn-info btn-sm" role="button" style='margin: 1rem 0;'>
-            Click here for more details about the models
+            Click here for more details about the models and current state of the apartment market
           </a>
         </div>
       {% elif pred_ann == 'Error' %}
@@ -130,7 +130,7 @@ to estimate the price of a given apartment.">
               <div class="col-lg-3">
                 <select id='rooms' class="custom-select" name="rooms" required>
                   <option selected disabled value=""></option>
-                  {% with ''|center:8 as range %}
+                  {% with ''|center:6 as range %}
                   {% for _ in range %}
                     <option>{{ forloop.counter }}</option>
                   {% endfor %}
@@ -145,7 +145,7 @@ to estimate the price of a given apartment.">
               <div class="col-lg-3">
                 <select id='floor' class="custom-select" name="floor" required>
                   <option selected disabled value=""></option>
-                  {% with ''|center:31 as range %}
+                  {% with ''|center:16 as range %}
                   {% for _ in range %}
                     <option>{{ forloop.counter|add:"-1" }}</option>
                   {% endfor %}
@@ -156,7 +156,7 @@ to estimate the price of a given apartment.">
               <div class="col-lg-3">
                 <select id='floors' class="custom-select" name="floors" required>
                   <option selected disabled value=""></option>
-                  {% with ''|center:31 as range %}
+                  {% with ''|center:16 as range %}
                   {% for _ in range %}
                     <option>{{ forloop.counter|add:"-1" }}</option>
                   {% endfor %}

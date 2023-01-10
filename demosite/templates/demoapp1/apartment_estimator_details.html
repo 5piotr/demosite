@@ -39,18 +39,18 @@
       <h4 class="my_h4">Data preparation</h4>
       <p class="my_p">
         Some observations had to be discarded. They were missing significant information that are highly impacting the final price.
-        18% of data had no price to begin with. The remaining 30% had no built year and 11% ware missing the information about the floors.
-        Rest of the data ware fairly complete, only 1-3% values per variable ware missing. After the drop, 52k observations remained.<br>
+        18% of data had no price to begin with. The remaining 30% had no built year and 5% ware missing the information about the floors.
+        Rest of the data ware fairly complete, only 1-3% values per variable ware missing. After the drop, 50k observations remained.<br>
         The categorical data have been checked for consistency. Only information about the floors needed processing. In border cases
         they were descriptive instead of numerical. <br>
         Information about the price per m<sup>2</sup> have been added for further preprocessing and analysis. <br>
         Data below 1<sup>st</sup> percentile and above 99<sup>th</sup> percentile for variables: "area", "price", "price_of_sqm"
-        have been considered as outliers. The same was for "build_yr" lower than 1900. Some outliers have also been found in latitude and longitude. Points that they were
-        describing were outside the Polish border despite clearly Polish administration information. In some rare cases, values of the
-        coordinates were numbers with no decimal places, which suggested some kind of algorithmic assignment not in line with the actual
-        location. After dropping the outliers, 49k observations remained. <br>
+        have been considered as outliers. The same was for "build_yr" lower than 1900. Some outliers have also been found in latitude and longitude.
+        Points that they were describing were outside the Polish border despite clearly Polish administration information.
+        In some rare cases, values of the coordinates were numbers with no decimal places,
+        which suggested some kind of algorithmic assignment not in line with the actual location.
+        After dropping the outliers, 45k observations remained. <br>
         Skew and kurtosis values for the variables have been checked. No further processing ware needed.
-
       </p>
       <h4 class="my_h4">Data analysis</h4>
       <p class="my_p">
@@ -184,7 +184,7 @@
         The number of estimators for random forest regressor have been selected by grid search algorithm. Tested values are between
         10 and 100. With increasing number of estimators the model performance improvement was small so finally selected amount
         was 30. The small number of estimators is improving model size and estimation time.<br>
-        The R<sup>2</sup> score for this model is 0.82 as established by 5-fold cross validation. Below you can see a comparison
+        The R<sup>2</sup> score for this model is 0.80 as established by 5-fold cross validation. Below you can see a comparison
         between the test data and the predictions and also error distribution.
       </p>
       <div class="container row justify-content-center">
@@ -225,7 +225,7 @@
         <dd class="col-sm-9">1 neuron</dd>
       </dl>
       <p class='my_p'>
-        Training has been performed over 1000 epochs and batch size of 256. The R<sup>2</sup> score for this model is 0.84.
+        Training has been performed over 1000 epochs and batch size of 256. The R<sup>2</sup> score for this model is 0.83.
         Below you can see the loss plot, a comparison between the test data and the predictions and error distribution.
       </p>
       <div class="container row justify-content-center">
